@@ -166,6 +166,9 @@ useEffect(() => {
     if (formData.password.trim() === "") {
       newErrors.password = "Password is required";
     }
+    if (!formData.institute || typeof formData.institute === 'string') {
+      newErrors.institute = "Please select an Institute";
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -471,9 +474,8 @@ useEffect(() => {
                       name="institute"
                       value={formData.institute?.value || ""}
                       onChange={(e) => {
-                        const selectedValue = e.target.value;
                         const selected = instituteOptions.find(
-                          (inst) => inst.value.toString() === selectedValue
+                          (inst) => inst.value.toString() === e.target.value
                         );
                         setFormData({
                           ...formData,
@@ -481,20 +483,23 @@ useEffect(() => {
                         });
                       }}
                       disabled={instituteOptions.length === 1}
+                      isInvalid={!!errors.institute}
                       style={{
                         borderRadius: "2px",
                         minHeight: "38px",
                         width: "100%",
-                        textAlign: "left",
                       }}
                     >
-                      <option value="">-- Select Institute --</option>
+                      <option value="">Select Institute...</option>
                       {instituteOptions.map((inst) => (
                         <option key={inst.value} value={inst.value}>
                           {inst.label}
                         </option>
                       ))}
                     </Form.Select>
+                    <Form.Control.Feedback type="invalid">
+                      {errors.institute}
+                    </Form.Control.Feedback>
                   </Form.Group>
 
                   {/* Sign In + Forgot Password */}
