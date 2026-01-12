@@ -7,9 +7,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 
-settings.py
-*.settings.py
-*/settings.py
+# Uncomment below if you want to ignore settings.py (NOT recommended for deployment)
+# settings.py
+# *.settings.py
+# */settings.py
 
 12-04-25.sqlite3
 17-11-25db.sqlite3

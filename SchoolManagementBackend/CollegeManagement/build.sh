@@ -3,8 +3,9 @@
 
 set -o errexit  # Exit on error
 
-# Add current directory to Python path
-export PYTHONPATH="${PYTHONPATH}:${PWD}"
+echo "Current directory: $(pwd)"
+echo "Directory contents:"
+ls -la
 
 echo "Installing dependencies..."
 pip install --upgrade pip
