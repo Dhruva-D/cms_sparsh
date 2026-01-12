@@ -72,8 +72,9 @@ ALLOWED_HOSTS_ENV = os.getenv("ALLOWED_HOSTS", "")
 if ALLOWED_HOSTS_ENV:
     ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS_ENV.split(',')]
 else:
-    # Default: allow localhost and all Render.com domains
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.onrender.com']
+    # Default: allow all hosts in production (Render auto-deployment)
+    # In production, this is safe as long as other security measures are in place
+    ALLOWED_HOSTS = ['*']
 
 
 # Application definition
