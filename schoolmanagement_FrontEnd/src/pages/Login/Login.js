@@ -283,23 +283,30 @@ useEffect(() => {
 
       const selectedInstitute = formData.institute;
 
-      if (!selectedInstitute) {
+      console.log("🔍 Form Data:", formData);
+      console.log("🏫 Selected Institute:", selectedInstitute);
+
+      if (!selectedInstitute || typeof selectedInstitute === 'string') {
         alert("Please select an Institute before logging in.");
         setLoading(false);
         return;
       }
+
+      const loginPayload = {
+        username: formData.username,
+        password: formData.password,
+        organization_id: selectedInstitute.organization_id,
+        branch_id: selectedInstitute.branch_id,
+      };
+
+      console.log("📤 Login Payload:", loginPayload);
 
       const loginResponse = await fetch(`${ApiUrl.apiurl}RegisterEmployee/Login/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          username: formData.username,
-          password: formData.password,
-          organization_id: selectedInstitute.organization_id,
-          branch_id: selectedInstitute.branch_id,
-        }),
+        body: JSON.stringify(loginPayload),
       });
 
       if (!loginResponse.ok) {
@@ -341,8 +348,10 @@ useEffect(() => {
       localStorage.setItem("branchName", branch_name);
 
       // --- Step 2: Navigate based on role ---
-      switch (userRole) {
+      const roleKey = userRole.toLowerCase();
+      switch (roleKey) {
         case "staff":
+        case "professor":
           navigate("/staff/dashboard");
           onLogin("staff");
           break;
