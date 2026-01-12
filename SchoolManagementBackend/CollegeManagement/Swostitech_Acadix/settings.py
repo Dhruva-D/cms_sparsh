@@ -68,8 +68,12 @@ hostname = socket.gethostname()
 DEBUG = os.getenv("DEBUG", "False") == "True"
 
 # Allowed hosts configuration
-ALLOWED_HOSTS_ENV = os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1")
-ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS_ENV.split(',')]
+ALLOWED_HOSTS_ENV = os.getenv("ALLOWED_HOSTS", "")
+if ALLOWED_HOSTS_ENV:
+    ALLOWED_HOSTS = [host.strip() for host in ALLOWED_HOSTS_ENV.split(',')]
+else:
+    # Default: allow localhost and all Render.com domains
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1', '.onrender.com']
 
 
 # Application definition
