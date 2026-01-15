@@ -177,12 +177,12 @@ const AdmOtherDetails = ({ formData, setFormData }) => {
     const incompleteDocuments = formData.documentsDetails.filter(
       (doc) => !doc.document_no
     );
-    if (incompleteDocuments.length > 0) {
-      alert(
-        "Please fill in all required fields (Document No) for documents before adding a new one."
-      );
-      return;
-    }
+    // if (incompleteDocuments.length > 0) {
+    //   alert(
+    //     "Please fill in all required fields (Document No) for documents before adding a new one."
+    //   );
+    //   return;
+    // }
 
     setFormData((prev) => ({
       ...prev,
@@ -222,16 +222,55 @@ const AdmOtherDetails = ({ formData, setFormData }) => {
   };
 
   //new code 07242025
-  const handleFileChange = (index, file) => {
+  // const handleFileChange = (index, file) => {
+  //   const updatedDocs = [...formData.documentsDetails];
+
+  //   // Store the uploaded file
+  //   updatedDocs[index]["document_pic"] = file;
+
+  //   // Create a persistent preview URL (for images or download/view link)
+  //   updatedDocs[index]["preview_url"] = URL.createObjectURL(file);
+
+  //   // Update the formData state
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     documentsDetails: updatedDocs,
+  //   }));
+  // };
+
+  const handleFileChange = (index, e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // ✅ Allow only image files
+    const allowedTypes = ["image/jpeg", "image/png", "image/jpg"];
+    if (!allowedTypes.includes(file.type)) {
+      alert("Only JPG, JPEG, and PNG image files are allowed.");
+
+      // ❌ Clear file input
+      e.target.value = "";
+      return;
+    }
+
+    // ✅ Max file size: 500 KB
+    const maxSize = 500 * 1024; // 500 KB in bytes
+    if (file.size > maxSize) {
+      alert("File size must not exceed 500 KB.");
+
+      // ❌ Clear file input
+      e.target.value = "";
+      return;
+    }
+
     const updatedDocs = [...formData.documentsDetails];
 
-    // Store the uploaded file
+    // ✅ Store valid file
     updatedDocs[index]["document_pic"] = file;
 
-    // Create a persistent preview URL (for images or download/view link)
+    // ✅ Create preview URL
     updatedDocs[index]["preview_url"] = URL.createObjectURL(file);
 
-    // Update the formData state
+    // ✅ Update state
     setFormData((prev) => ({
       ...prev,
       documentsDetails: updatedDocs,
@@ -313,7 +352,6 @@ const AdmOtherDetails = ({ formData, setFormData }) => {
                       ))}
                     </select>
                   </td>
-
                   <td>
                     <input
                       type="text"
@@ -362,13 +400,14 @@ const AdmOtherDetails = ({ formData, setFormData }) => {
                       required
                     />
                   </td>
-
                   <td>
                     <input
                       type="file"
-                      onChange={(e) =>
-                        handleFileChange(index, e.target.files[0])
-                      }
+                      accept="image/png, image/jpeg, image/jpg"
+                      // onChange={(e) =>
+                      //   handleFileChange(index, e.target.files[0])
+                      // }
+                      onChange={(e) => handleFileChange(index, e)}
                     />
                     {row.preview_url && (
                       <div className="mt-2">
@@ -382,7 +421,6 @@ const AdmOtherDetails = ({ formData, setFormData }) => {
                       </div>
                     )}
                   </td>
-
                   <td>
                     <button
                       type="button"

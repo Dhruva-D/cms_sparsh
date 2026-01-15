@@ -82,8 +82,8 @@ function Assignment() {
 
               {/* Error Alert for Student Details */}
               {studentDetailsError && (
-                <Alert 
-                  variant="warning" 
+                <Alert
+                  variant="warning"
                   className="mt-3"
                   style={{ backgroundColor: "#ffffff", border: "1px solid #dee2e6" }}
                 >
@@ -94,8 +94,8 @@ function Assignment() {
 
               {/* Error Alert for Assignments */}
               {assignmentsError && (
-                <Alert 
-                  variant="warning" 
+                <Alert
+                  variant="warning"
                   className="mt-3"
                   style={{ backgroundColor: "#ffffff", border: "1px solid #dee2e6" }}
                 >
@@ -112,7 +112,7 @@ function Assignment() {
                         <th>Sr.No</th>
                         <th>Date</th>
                         <th>Subject</th>
-                        <th>Lecture</th>
+                        <th>Period</th>
                         <th>Professor</th>
                         <th>Assignment Details</th>
                         <th>Attachment</th>
@@ -160,7 +160,7 @@ function Assignment() {
                       ) : (
                         <tr>
                           <td colSpan="7" className="text-center">
-                            {assignmentsError 
+                            {assignmentsError
                               ? "Unable to load assignments. Please try again later."
                               : "No assignments found for your current semester."}
                           </td>

@@ -572,7 +572,9 @@ const SelectStudentModal = ({ show, handleClose, onSelectStudent }) => {
         section_id: selectedSection?.value || "",
       });
 
-      const url = `http://31.97.63.174:9000/api/StudentCourse/StudentCourseRecordFilter/?${params.toString()}`;
+      const url = `${
+        ApiUrl.apiurl
+      }StudentCourse/StudentCourseRecordFilter/?${params.toString()}`;
       console.log("Fetching student records from:", url);
 
       const response = await fetch(url, {
@@ -592,8 +594,8 @@ const SelectStudentModal = ({ show, handleClose, onSelectStudent }) => {
           studentBasicDetails: {
             id: student.student_id,
             student_name: student.student_name || "",
-            college_admission_no: student.college_admission_no || "",
-            enrollment_no: student.enrollment_no || "",
+            registration_no: student.registration_no || "",
+            enrollment_no: student.college_admission_no || "",
             batch_code: student.batch_code || "",
             course_name: student.course_name || "",
             department_code: student.department_code || "",
@@ -970,7 +972,7 @@ const handleClearFilters = () => {
                           <thead>
                             <tr>
                               <th>Student Name</th>
-                              <th>College Admission No</th>
+                              <th>ONMRC Registration No</th>
                               <th>Admission No</th>
                               <th>Session</th>
                               <th>Course</th>
@@ -991,7 +993,7 @@ const handleClearFilters = () => {
                                 return (
                                   <tr key={offset + index}>
                                     <td>{s.student_name}</td>
-                                    <td>{s.college_admission_no}</td>
+                                    <td>{s.registration_no }</td>
                                     <td>{s.enrollment_no}</td>
                                     <td>{s.batch_code}</td>
                                     <td>{s.course_name}</td>

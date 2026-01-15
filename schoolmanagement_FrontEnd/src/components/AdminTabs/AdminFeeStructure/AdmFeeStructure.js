@@ -138,7 +138,7 @@ const handleClear = () => {
   setSelectedCategory(null);
   setSelectedNewExisting(null);
 
-  // 🔴 CLEAR OPTIONS
+  //  CLEAR OPTIONS
   setCourses([]);
   setDepartments([]);
   setAcademicYears([]);
@@ -148,10 +148,10 @@ const handleClear = () => {
 
   setIsFeeStructureFrozen(false);
 
-  // 🔴 FORCE react-select re-mount
+  //  FORCE react-select re-mount
   setFormKey((prev) => prev + 1);
 
-  // 🔴 RELEASE RESET LOCK AFTER PAINT
+  //  RELEASE RESET LOCK AFTER PAINT
   requestAnimationFrame(() => {
     setIsResetting(false);
   });
@@ -741,55 +741,140 @@ useEffect(() => {
 
 
   // ------------------- FREQUENCY CHANGE -------------------
+// const handleFrequencyChange = async (selectedOption) => {
+//   if (isResetting) return;
+
+//   setFeeElement((prev) => ({
+//     ...prev,
+//     frequency: selectedOption?.value || "",
+//   }));
+
+//   if (!selectedOption) {
+//     setVisibleSemesters(0);
+//     return;
+//   }
+
+//   const organization_id = sessionStorage.getItem("organization_id");
+//   const branch_id = sessionStorage.getItem("branch_id");
+
+//   try {
+//     const token = localStorage.getItem("accessToken");
+
+//     if (!token) {
+//       console.warn("Access token missing - cannot fetch fee frequency");
+//       return;
+//     }
+
+//     const url = `${ApiUrl.apiurl}FeeFrequency/GetFeeFrequencyById/?organization_id=${organization_id}&branch_id=${branch_id}&fee_frequency_id=${selectedOption.value}`;
+
+//     const res = await fetch(url, {
+//       method: "GET",
+//       headers: {
+//         "Content-Type": "application/json",
+//         Authorization: `Bearer ${token}`,
+//       },
+//     });
+
+//    if (!res.ok) {
+//      throw new Error(`HTTP error! Status: ${res.status}`);
+//   }
+
+//     const data = await res.json();
+//     const count = Number(data?.frequency_period) || 0;
+
+//     setVisibleSemesters(count);
+//     setFeeElement((prev) => ({
+//       ...prev,
+//       semesters: Array(count).fill(""),
+//     }));
+//   } catch (error) {
+//     console.error("Frequency API Error:", error);
+//      setVisibleSemesters(0);
+//   }
+// };
+
+
 const handleFrequencyChange = async (selectedOption) => {
   if (isResetting) return;
 
-  setFeeElement((prev) => ({
-    ...prev,
-    frequency: selectedOption?.value || "",
-  }));
-
+  // Clear first
   if (!selectedOption) {
+    setFeeElement((prev) => ({
+      ...prev,
+      frequency: "",
+      semesters: [],
+    }));
     setVisibleSemesters(0);
     return;
   }
 
+  // 🚫 HARD GUARD
+  if (!selectedSession?.value || !selectedCourse?.value) {
+    console.warn("Session or Course missing", {
+      session: selectedSession,
+      course: selectedCourse,
+    });
+    return;
+  }
+
+  // ✅ SAFE IDS
   const organization_id = sessionStorage.getItem("organization_id");
   const branch_id = sessionStorage.getItem("branch_id");
+  const batch_id = Number(selectedSession.value);
+  const course_id = Number(selectedCourse.value);
+  const fee_frequency_id = Number(selectedOption.value);
+
+  // Save frequency
+  setFeeElement((prev) => ({
+    ...prev,
+    frequency: fee_frequency_id,
+  }));
+
+  console.log("FeeFrequency API PARAMS:", {
+    organization_id,
+    branch_id,
+    batch_id,
+    course_id,
+    fee_frequency_id,
+  });
 
   try {
     const token = localStorage.getItem("accessToken");
+    if (!token) return;
 
-    if (!token) {
-      console.warn("Access token missing - cannot fetch fee frequency");
-      return;
-    }
+    const url = `${ApiUrl.apiurl}FeeFrequency/GetFeeFrequencyById/
+      ?organization_id=${organization_id}
+      &branch_id=${branch_id}
+      &batch_id=${batch_id}
+      &course_id=${course_id}
+      &fee_frequency_id=${fee_frequency_id}`.replace(/\s+/g, "");
 
-    const url = `${ApiUrl.apiurl}FeeFrequency/GetFeeFrequencyById/?organization_id=${organization_id}&branch_id=${branch_id}&fee_frequency_id=${selectedOption.value}`;
-
-    const res = await fetch(url, {
+    const response = await fetch(url, {
       method: "GET",
       headers: {
-        "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
     });
 
-   if (!res.ok) {
-     throw new Error(`HTTP error! Status: ${res.status}`);
-  }
+    if (!response.ok) {
+      throw new Error(`HTTP ${response.status}`);
+    }
 
-    const data = await res.json();
-    const count = Number(data?.frequency_period) || 0;
+    const data = await response.json();
+    console.log("FeeFrequency Response:", data);
 
-    setVisibleSemesters(count);
+    const periodCount = Number(data.frequency_period) || 0;
+
+    setVisibleSemesters(periodCount);
+
     setFeeElement((prev) => ({
       ...prev,
-      semesters: Array(count).fill(""),
+      semesters: Array(periodCount).fill(""),
     }));
   } catch (error) {
-    console.error("Frequency API Error:", error);
-     setVisibleSemesters(0);
+    console.error("Fee Frequency API failed:", error);
+    setVisibleSemesters(0);
   }
 };
 
@@ -1230,9 +1315,10 @@ if (!response.ok) {
                       className="detail"
                       style={{ width: "180px" }}
                       value={feeElement.frequency || ""}
+                      disabled={!selectedSession || !selectedCourse}
                       onChange={(e) => {
                         const selectedOption = frequencyOptions.find(
-                          (o) => o.value.toString() === e.target.value
+                          (o) => String(o.value) === e.target.value
                         );
                         handleFrequencyChange(selectedOption);
                       }}
@@ -1264,7 +1350,7 @@ if (!response.ok) {
 
                         const num = Number(value);
 
-                        if (num < 0) return; 
+                        if (num < 0) return;
 
                         setFeeElement((prev) => ({
                           ...prev,

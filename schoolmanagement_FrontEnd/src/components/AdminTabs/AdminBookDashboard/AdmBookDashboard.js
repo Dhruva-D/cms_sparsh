@@ -69,7 +69,14 @@ const AdmBookDashboard = () => {
 
       if (issuesResponse.ok && issuesResult.message === "success") {
         // Get only the 10 most recent issues
-        const recent = (issuesResult.data || []).slice(0, 10);
+        // Sort by issue_date descending, then by book_issue_id descending
+        const allIssues = issuesResult.data || [];
+        const sortedIssues = allIssues.sort((a, b) => {
+          const dateDiff = new Date(b.issue_date) - new Date(a.issue_date);
+          if (dateDiff !== 0) return dateDiff;
+          return (b.book_issue_id || 0) - (a.book_issue_id || 0);
+        });
+        const recent = sortedIssues.slice(0, 10);
         setRecentIssues(recent);
       }
     } catch (err) {
@@ -296,7 +303,7 @@ const AdmBookDashboard = () => {
                     📋 Recent Book Issues
                   </h5>
                   {recentIssues.length > 0 ? (
-                    <Table  bordered size="sm">
+                    <Table bordered size="sm">
                       <thead style={{ backgroundColor: "#f8f9fa" }}>
                         <tr>
                           <th>#</th>

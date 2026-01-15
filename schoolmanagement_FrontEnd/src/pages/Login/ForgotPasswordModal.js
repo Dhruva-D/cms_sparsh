@@ -17,6 +17,8 @@ const ForgotPasswordModal = ({ show, onHide }) => {
   const passwordsMatch = password === confirmPassword;
 
   // 🔹 STEP 1: SEND OTP
+
+  
   const handleSendCode = async () => {
     if (!username) {
       setError("Please enter username");
@@ -64,45 +66,58 @@ const ForgotPasswordModal = ({ show, onHide }) => {
   };
 
   // 🔹 STEP 2: VERIFY OTP (✅ API INTEGRATED)
-  const handleVerifyOtp = async () => {
-    if (!otp) {
-      setError("Please enter OTP");
-      return;
-    }
+ const handleVerifyOtp = async () => {
+   if (!otp) {
+     setError("Please enter OTP");
+     return;
+   }
 
-    const organization_id = localStorage.getItem("orgId");
-    const branch_id = localStorage.getItem("branchId");
+   // ✅ Get institute data from localStorage (SAME AS SEND OTP)
+   const instituteList = JSON.parse(
+     localStorage.getItem("organizationBranchList")
+   );
 
-    try {
-      setLoading(true);
-      setError("");
+   if (!Array.isArray(instituteList) || instituteList.length === 0) {
+     setError("Organization or Branch not found. Please login again.");
+     return;
+   }
 
-      const response = await fetch(
-        `${ApiUrl.apiurl}ForgotPassword/verify-otp/`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            organization_id: Number(organization_id),
-            branch_id: Number(branch_id),
-            username: username,
-            otp: otp,
-          }),
-        }
-      );
+   // ✅ Take first institute
+   const { organization_id, branch_id } = instituteList[0];
 
-      if (!response.ok) throw new Error("Invalid OTP");
+   try {
+     setLoading(true);
+     setError("");
 
-      await response.json();
+     const response = await fetch(
+       `${ApiUrl.apiurl}ForgotPassword/verify-otp/`,
+       {
+         method: "POST",
+         headers: { "Content-Type": "application/json" },
+         body: JSON.stringify({
+           organization_id: Number(organization_id),
+           branch_id: Number(branch_id),
+           username,
+           otp,
+         }),
+       }
+     );
 
-      // ✅ OTP VERIFIED → ENABLE PASSWORD FIELDS
-      setStep(3);
-    } catch (err) {
-      setError(err.message || "OTP verification failed");
-    } finally {
-      setLoading(false);
-    }
-  };
+     if (!response.ok) {
+       throw new Error("Invalid OTP");
+     }
+
+     await response.json();
+
+     // ✅ OTP VERIFIED → ENABLE PASSWORD FIELDS
+     setStep(3);
+   } catch (err) {
+     setError(err.message || "OTP verification failed");
+   } finally {
+     setLoading(false);
+   }
+ };
+
 
   // 🔹 STEP 3: RESET PASSWORD (API can be added later)
   // 🔹 STEP 3: CHANGE PASSWORD (API INTEGRATED — NO AUTH HEADER)

@@ -449,17 +449,6 @@ function SelectedStudentTable({}) {
     }
   };
 
-  // const handleRemoveRow = (studentId) => {
-  //   // Remove the student from the selectedStudents
-  //   const updatedStudents = selectedStudents.filter(
-  //     (student) => student.studentBasicDetails.id !== studentId
-  //   );
-  //   setSelectedStudents(updatedStudents);
-  //   const updatedTableData = { ...tableData };
-  //   delete updatedTableData[studentId];
-  //   setTableData(updatedTableData);
-  // };
-
   const handleRemoveRow = (studentId) => {
     // Remove student from selectedStudents
     const updatedStudents = selectedStudents.filter(
@@ -659,7 +648,7 @@ function SelectedStudentTable({}) {
                             htmlFor="schoolAdmissionNo"
                             className="form-label"
                           >
-                            College Admission No
+                            Admission No
                           </label>
                           <input
                             type="text"
@@ -797,13 +786,12 @@ function SelectedStudentTable({}) {
                         <th>Department</th>
                         <th>Semester</th>
                         <th>Section</th>
-                        <th>Roll No</th>
                         <th
                           style={{ paddingLeft: "50px", paddingRight: "50px" }}
                         >
                           Student Name
                         </th>
-                        <th>College Admission No</th>
+                        <th>Admission No</th>
                         <th>Barcode</th>
                         <th
                           style={{ paddingLeft: "50px", paddingRight: "50px" }}
@@ -848,7 +836,6 @@ function SelectedStudentTable({}) {
                               <td>{details.department_code}</td>
                               <td>{details.semester_name}</td>
                               <td>{details.section_name}</td>
-                              <td>{details.enrollment_no}</td>
                               <td>{details.student_name}</td>
                               <td>{details.college_admission_no}</td>
                               <td>{details.barcode}</td>

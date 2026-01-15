@@ -103,7 +103,8 @@ const ModalClass = ({ show, onSelectStudent, handleClose }) => {
       if (filters.fatherName) url += `&father_name=${filters.fatherName}`;
       if (filters.motherName) url += `&mother_name=${filters.motherName}`;
       if (filters.schoolAdmissionNo)
-        url += `&school_admission_no=${filters.schoolAdmissionNo}`;
+        // url += `&school_admission_no=${filters.schoolAdmissionNo}`;
+        url += `&registration_no=${filters.schoolAdmissionNo}`;
 
       // Dropdown filters
       if (selectedBatch) url += `&batch_id=${selectedBatch}`;
@@ -130,23 +131,20 @@ const ModalClass = ({ show, onSelectStudent, handleClose }) => {
         const mappedData = result.data.map((s) => ({
           id: s.id,
           student_id: s.student_id,
-
           studentname: s.student_name,
-          school_admission_no: s.college_admission_no,
+          // school_admission_no: s.college_admission_no,
+          school_admission_no: s.registration_no,
           admission_no: s.college_admission_no,
           rollno: s.enrollment_no,
-
           batch_code: s.batch_code,
           course_name: s.course_name,
           department_code: s.department_code,
           academic_year_code: s.academic_year_code,
           semester_name: s.semester_name,
           section_name: s.section_name,
-
           barcode: s.barcode,
           father_name: s.father_name,
           mother_name: s.mother_name,
-
           rawData: s,
         }));
 
@@ -569,7 +567,7 @@ const ModalClass = ({ show, onSelectStudent, handleClose }) => {
                         htmlFor="school-admission-no"
                         className="form-label"
                       >
-                        College Admission No
+                        ONMRC Registration No
                       </label>
                       <input
                         type="text"
@@ -577,7 +575,7 @@ const ModalClass = ({ show, onSelectStudent, handleClose }) => {
                         value={filters.schoolAdmissionNo}
                         onChange={handleInputChange}
                         className="form-control detail"
-                        placeholder="College Admission No"
+                        placeholder="ONMRC Registration No"
                         style={{ height: "38px", padding: "0.375rem 0.75rem" }}
                       />
                     </div>
@@ -591,7 +589,7 @@ const ModalClass = ({ show, onSelectStudent, handleClose }) => {
                       <thead>
                         <tr>
                           <th>Student Name</th>
-                          <th>College Admission No</th>
+                          <th>ONMRC Registration No</th>
                           <th>Admission No</th>
                           <th>Session</th>
                           <th>Course</th>

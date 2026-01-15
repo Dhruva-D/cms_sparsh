@@ -17,7 +17,7 @@ import api from "../../../utils/api";
 
 const StdPayment = () => {
   const navigate = useNavigate();
-  
+
   // Get student ID from sessionStorage
   const studentId = sessionStorage.getItem("userId");
 
@@ -30,10 +30,10 @@ const StdPayment = () => {
 
   // Extract college_admission_no from student details
   const basicDetails = studentDetails?.student_basic_details;
-  const collegeAdmissionNo = basicDetails?.college_admission_no || 
-                             basicDetails?.admission_no || 
-                             sessionStorage.getItem("college_admission_no") || 
-                             "";
+  const collegeAdmissionNo = basicDetails?.college_admission_no ||
+    basicDetails?.admission_no ||
+    sessionStorage.getItem("college_admission_no") ||
+    "";
 
   // Store college_admission_no in sessionStorage when available
   useEffect(() => {
@@ -77,7 +77,7 @@ const StdPayment = () => {
 
   // Collapsible rows state
   const [expandedRows, setExpandedRows] = useState(new Set());
-  
+
   // Selected sub-fees state (by sub-fee ID)
   const [selectedSubFees, setSelectedSubFees] = useState({});
 
@@ -113,7 +113,7 @@ const StdPayment = () => {
     if (!feedetails || feedetails.length === 0) return [];
 
     const groups = {};
-    
+
     feedetails.forEach((fee) => {
       // Create group key: semester_id only (all fees in same semester grouped together)
       const groupKey = `semester_${fee.semester_id}`;
@@ -126,7 +126,7 @@ const StdPayment = () => {
           subFees: [],
         };
       }
-      
+
       groups[groupKey].subFees.push(fee);
     });
 
@@ -462,12 +462,12 @@ const StdPayment = () => {
                                 ? `${basicDetails.first_name || ""} ${basicDetails.middle_name || ""} ${basicDetails.last_name || ""}`.trim()
                                 : "-")
                             }
-                            style={{ 
-                              backgroundColor: "white", 
-                              fontSize: "13px", 
-                              padding: "3px 8px", 
-                              height: "28px", 
-                              flex: "1", 
+                            style={{
+                              backgroundColor: "white",
+                              fontSize: "13px",
+                              padding: "3px 8px",
+                              height: "28px",
+                              flex: "1",
                               maxWidth: "300px",
                               border: "1px solid #e0e0e0",
                               borderRadius: "3px",
@@ -485,12 +485,12 @@ const StdPayment = () => {
                             disabled
                             size="sm"
                             value={basicDetails?.batch_name || studentData?.batch_name || "-"}
-                            style={{ 
-                              backgroundColor: "white", 
-                              fontSize: "13px", 
-                              padding: "3px 8px", 
-                              height: "28px", 
-                              flex: "1", 
+                            style={{
+                              backgroundColor: "white",
+                              fontSize: "13px",
+                              padding: "3px 8px",
+                              height: "28px",
+                              flex: "1",
                               maxWidth: "300px",
                               border: "1px solid #e0e0e0",
                               borderRadius: "3px",
@@ -508,12 +508,12 @@ const StdPayment = () => {
                             disabled
                             size="sm"
                             value={studentData?.course_name || basicDetails?.course_name || "-"}
-                            style={{ 
-                              backgroundColor: "white", 
-                              fontSize: "13px", 
-                              padding: "3px 8px", 
-                              height: "28px", 
-                              flex: "1", 
+                            style={{
+                              backgroundColor: "white",
+                              fontSize: "13px",
+                              padding: "3px 8px",
+                              height: "28px",
+                              flex: "1",
                               maxWidth: "300px",
                               border: "1px solid #e0e0e0",
                               borderRadius: "3px",
@@ -531,12 +531,12 @@ const StdPayment = () => {
                             disabled
                             size="sm"
                             value={basicDetails?.department_description || studentData?.department_description || basicDetails?.department_name || "-"}
-                            style={{ 
-                              backgroundColor: "white", 
-                              fontSize: "13px", 
-                              padding: "3px 8px", 
-                              height: "28px", 
-                              flex: "1", 
+                            style={{
+                              backgroundColor: "white",
+                              fontSize: "13px",
+                              padding: "3px 8px",
+                              height: "28px",
+                              flex: "1",
                               maxWidth: "300px",
                               border: "1px solid #e0e0e0",
                               borderRadius: "3px",
@@ -554,12 +554,12 @@ const StdPayment = () => {
                             disabled
                             size="sm"
                             value={studentData?.academicYearName || basicDetails?.academic_year || "-"}
-                            style={{ 
-                              backgroundColor: "white", 
-                              fontSize: "13px", 
-                              padding: "3px 8px", 
-                              height: "28px", 
-                              flex: "1", 
+                            style={{
+                              backgroundColor: "white",
+                              fontSize: "13px",
+                              padding: "3px 8px",
+                              height: "28px",
+                              flex: "1",
                               maxWidth: "300px",
                               border: "1px solid #e0e0e0",
                               borderRadius: "3px",
@@ -577,12 +577,12 @@ const StdPayment = () => {
                             disabled
                             size="sm"
                             value={basicDetails?.semester_description || studentData?.semester || "-"}
-                            style={{ 
-                              backgroundColor: "white", 
-                              fontSize: "13px", 
-                              padding: "3px 8px", 
-                              height: "28px", 
-                              flex: "1", 
+                            style={{
+                              backgroundColor: "white",
+                              fontSize: "13px",
+                              padding: "3px 8px",
+                              height: "28px",
+                              flex: "1",
                               maxWidth: "300px",
                               border: "1px solid #e0e0e0",
                               borderRadius: "3px",
@@ -648,7 +648,7 @@ const StdPayment = () => {
                         <thead>
                           <tr style={{ backgroundColor: "#007bff", color: "#fff" }}>
                             <th style={{ width: "80px", minWidth: "80px", maxWidth: "80px" }}></th>
-                            <th>Period</th>
+                            <th>Semester</th>
                             <th>Total Amount</th>
                             <th>Paid Amount</th>
                             <th>Discount</th>
@@ -711,58 +711,58 @@ const StdPayment = () => {
                                     const discountAmount = parseFloat(subFee.discount || 0);
                                     return !(elementAmount === 0 && paidAmount === 0 && discountAmount === 0);
                                   }).length > 0 && (
-                                    <tr>
-                                      <td colSpan="6" style={{ padding: "0", border: "none" }}>
-                                        <div style={{ margin: "10px", backgroundColor: "#f8f9fa" }}>
-                                          <table className="table table-bordered table-sm" style={{ margin: "0 0 0 20px", backgroundColor: "white" }}>
-                                            <thead>
-                                              <tr style={{ backgroundColor: "#e9ecef" }}>
-                                                <th>Element Name</th>
-                                                <th>Amount</th>
-                                                <th>Paid</th>
-                                                <th>Balance</th>
-                                                <th style={{ width: "60px" }}>Pay</th>
-                                              </tr>
-                                            </thead>
-                                            <tbody>
-                                              {groupSubFees
-                                                .filter((subFee) => {
-                                                  // Filter out sub-fees where total, paid, and discount are all zero
-                                                  const elementAmount = parseFloat(subFee.element_amount || 0);
-                                                  const paidAmount = parseFloat(subFee.paid_amount || 0);
-                                                  const discountAmount = parseFloat(subFee.discount || 0);
-                                                  return !(elementAmount === 0 && paidAmount === 0 && discountAmount === 0);
-                                                })
-                                                .map((subFee) => {
-                                                  const elementAmount = parseFloat(subFee.element_amount || 0);
-                                                  const paidAmount = parseFloat(subFee.paid_amount || 0);
-                                                  const balance = elementAmount - paidAmount;
-                                                  const isSelected = selectedSubFees[String(subFee.id)]?.groupId === group.groupId;
-                                                  const hasBalance = balance > 0;
+                                      <tr>
+                                        <td colSpan="6" style={{ padding: "0", border: "none" }}>
+                                          <div style={{ margin: "10px", backgroundColor: "#f8f9fa" }}>
+                                            <table className="table table-bordered table-sm" style={{ margin: "0 0 0 20px", backgroundColor: "white" }}>
+                                              <thead>
+                                                <tr style={{ backgroundColor: "#e9ecef" }}>
+                                                  <th>Element Name</th>
+                                                  <th>Amount</th>
+                                                  <th>Paid</th>
+                                                  <th>Balance</th>
+                                                  <th style={{ width: "60px" }}>Pay</th>
+                                                </tr>
+                                              </thead>
+                                              <tbody>
+                                                {groupSubFees
+                                                  .filter((subFee) => {
+                                                    // Filter out sub-fees where total, paid, and discount are all zero
+                                                    const elementAmount = parseFloat(subFee.element_amount || 0);
+                                                    const paidAmount = parseFloat(subFee.paid_amount || 0);
+                                                    const discountAmount = parseFloat(subFee.discount || 0);
+                                                    return !(elementAmount === 0 && paidAmount === 0 && discountAmount === 0);
+                                                  })
+                                                  .map((subFee) => {
+                                                    const elementAmount = parseFloat(subFee.element_amount || 0);
+                                                    const paidAmount = parseFloat(subFee.paid_amount || 0);
+                                                    const balance = elementAmount - paidAmount;
+                                                    const isSelected = selectedSubFees[String(subFee.id)]?.groupId === group.groupId;
+                                                    const hasBalance = balance > 0;
 
-                                                  return (
-                                                    <tr key={subFee.id} style={{ backgroundColor: isSelected ? "#e7f3ff" : "white" }}>
-                                                      <td>{subFee.element_name || "-"}</td>
-                                                      <td>₹{elementAmount.toFixed(2)}</td>
-                                                      <td>₹{paidAmount.toFixed(2)}</td>
-                                                      <td>₹{balance > 0 ? balance.toFixed(2) : "0.00"}</td>
-                                                      <td style={{ textAlign: "center" }}>
-                                                        <Form.Check
-                                                          type="checkbox"
-                                                          checked={isSelected}
-                                                          onChange={() => toggleSubFeeSelection(subFee.id, group.groupId)}
-                                                          disabled={!hasBalance}
-                                                        />
-                                                      </td>
-                                                    </tr>
-                                                  );
-                                                })}
-                                            </tbody>
-                                          </table>
-                                        </div>
-                                      </td>
-                                    </tr>
-                                  )}
+                                                    return (
+                                                      <tr key={subFee.id} style={{ backgroundColor: isSelected ? "#e7f3ff" : "white" }}>
+                                                        <td>{subFee.element_name || "-"}</td>
+                                                        <td>₹{elementAmount.toFixed(2)}</td>
+                                                        <td>₹{paidAmount.toFixed(2)}</td>
+                                                        <td>₹{balance > 0 ? balance.toFixed(2) : "0.00"}</td>
+                                                        <td style={{ textAlign: "center" }}>
+                                                          <Form.Check
+                                                            type="checkbox"
+                                                            checked={isSelected}
+                                                            onChange={() => toggleSubFeeSelection(subFee.id, group.groupId)}
+                                                            disabled={!hasBalance}
+                                                          />
+                                                        </td>
+                                                      </tr>
+                                                    );
+                                                  })}
+                                              </tbody>
+                                            </table>
+                                          </div>
+                                        </td>
+                                      </tr>
+                                    )}
                                 </React.Fragment>
                               );
                             })
@@ -788,7 +788,7 @@ const StdPayment = () => {
                       <thead>
                         <tr style={{ backgroundColor: "#007bff", color: "#fff" }}>
                           <th>Sr.No</th>
-                          <th>Period</th>
+                          <th>Semester</th>
                           <th>Receipt Date</th>
                           <th>Receipt Amount</th>
                           <th>Discount Amount</th>
@@ -804,7 +804,7 @@ const StdPayment = () => {
                               <td>
                                 {formatPeriod(
                                   receipt.semester ||
-                                    receipt.fee_applied_from,
+                                  receipt.fee_applied_from,
                                   receipt.receipt_date
                                 )}
                               </td>
@@ -812,15 +812,15 @@ const StdPayment = () => {
                               <td>
                                 {parseFloat(
                                   receipt.receipt_amount ||
-                                    receipt.payment_amount ||
-                                    0
+                                  receipt.payment_amount ||
+                                  0
                                 ).toFixed(2)}
                               </td>
                               <td>
                                 {parseFloat(
                                   receipt.discount ||
-                                    receipt.discount_amount ||
-                                    0
+                                  receipt.discount_amount ||
+                                  0
                                 ).toFixed(2)}
                               </td>
                               <td>
@@ -949,7 +949,7 @@ const StdPayment = () => {
                         )}
                     </div>
                   ) : (
-                    <Alert 
+                    <Alert
                       variant="warning"
                       style={{ backgroundColor: "#ffffff", border: "1px solid #dee2e6" }}
                     >
@@ -1014,9 +1014,9 @@ const StdPayment = () => {
                             >
                               {selectedFeeGroup.subFees && selectedFeeGroup.subFees.length > 0
                                 ? selectedFeeGroup.subFees
-                                    .map((subFee) => subFee.element_name || subFee.fee_structure_description || "-")
-                                    .filter((name, index, self) => self.indexOf(name) === index) // Remove duplicates
-                                    .join(", ") || "Multiple"
+                                  .map((subFee) => subFee.element_name || subFee.fee_structure_description || "-")
+                                  .filter((name, index, self) => self.indexOf(name) === index) // Remove duplicates
+                                  .join(", ") || "Multiple"
                                 : "-"}
                             </div>
                           </Col>
@@ -1113,20 +1113,19 @@ const StdPayment = () => {
                               fontSize: "18px",
                               fontWeight: "600",
                               textAlign: "center",
-                              border: `2px solid ${
-                                paymentAmount &&
+                              border: `2px solid ${paymentAmount &&
                                 parseFloat(paymentAmount) >
-                                  calculateSelectedDueAmount(selectedFeeGroup?.groupId || "")
-                                  ? "#dc3545"
-                                  : "#007bff"
-                              }`,
+                                calculateSelectedDueAmount(selectedFeeGroup?.groupId || "")
+                                ? "#dc3545"
+                                : "#007bff"
+                                }`,
                               borderRadius: "8px",
                               padding: "12px 12px 12px 35px",
                             }}
                           />
                         </div>
                         {paymentAmount &&
-                        parseFloat(paymentAmount) >
+                          parseFloat(paymentAmount) >
                           calculateSelectedDueAmount(selectedFeeGroup?.groupId || "") ? (
                           <Form.Text
                             style={{ color: "#dc3545", fontSize: "14px" }}
@@ -1190,20 +1189,20 @@ const StdPayment = () => {
                           </Row>
                           {parseFloat(paymentAmount) <
                             calculateSelectedDueAmount(selectedFeeGroup?.groupId || "") && (
-                            <Row className="mt-2">
-                              <Col>
-                                <div
-                                  style={{ fontSize: "12px", color: "#856404" }}
-                                >
-                                  Remaining after payment: ₹
-                                  {(
-                                    calculateSelectedDueAmount(selectedFeeGroup?.groupId || "") -
-                                    parseFloat(paymentAmount || 0)
-                                  ).toFixed(2)}
-                                </div>
-                              </Col>
-                            </Row>
-                          )}
+                              <Row className="mt-2">
+                                <Col>
+                                  <div
+                                    style={{ fontSize: "12px", color: "#856404" }}
+                                  >
+                                    Remaining after payment: ₹
+                                    {(
+                                      calculateSelectedDueAmount(selectedFeeGroup?.groupId || "") -
+                                      parseFloat(paymentAmount || 0)
+                                    ).toFixed(2)}
+                                  </div>
+                                </Col>
+                              </Row>
+                            )}
                         </div>
                       )}
 
@@ -1224,7 +1223,7 @@ const StdPayment = () => {
                             !paymentMethod ||
                             parseFloat(paymentAmount) <= 0 ||
                             parseFloat(paymentAmount) >
-                              calculateSelectedDueAmount(selectedFeeGroup?.groupId || "") ||
+                            calculateSelectedDueAmount(selectedFeeGroup?.groupId || "") ||
                             selectedSubFeeIds.length === 0
                           }
                           style={{ minWidth: "120px" }}

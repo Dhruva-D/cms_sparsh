@@ -15,7 +15,6 @@ const HostelEdit = ({
   const [amount, setAmount] = useState("");
   const [transportAvailed, setTransportAvailed] = useState(false);
   const [hostelAvailed, setHostelAvailed] = useState(false);
-
   const [selectedMonths, setSelectedMonths] = useState([]);
   const [route, setRoute] = useState([]);
   const [months, setMonths] = useState([]);
@@ -24,26 +23,21 @@ const HostelEdit = ({
   const [amounts, setAmounts] = useState("");
   const [monthStatus, setMonthStatus] = useState([]);
   const [routeOptions, setRouteOptions] = useState([]);
-
   const token = localStorage.getItem("accessToken");
-
   const orgId = sessionStorage.getItem("organization_id") || 1;
   const branchId = sessionStorage.getItem("branch_id") || 1;
-
   const [hostelList, setHostelList] = useState([]);
   const [blockList, setBlockList] = useState([]);
   const [floorList, setFloorList] = useState([]);
   const [roomTypeList, setRoomTypeList] = useState([]);
   const [roomList, setRoomList] = useState([]);
   const [bedList, setBedList] = useState([]);
-
   const [selectedHostel, setSelectedHostel] = useState(null);
   const [selectedBlock, setSelectedBlock] = useState(null);
   const [selectedFloor, setSelectedFloor] = useState(null);
   const [selectedRoomType, setSelectedRoomType] = useState(null);
   const [selectedRoom, setSelectedRoom] = useState(null);
   const [selectedBed, setSelectedBed] = useState(null);
-
   const [selectedSemesters, setSelectedSemesters] = useState([]); // checkbox list
 
   useEffect(() => {
@@ -331,6 +325,48 @@ const HostelEdit = ({
     }
   }, [transportDetails, show]);
 
+  // Fetch Assign Semester to student
+  // useEffect(() => {
+  //   if (!show) return;
+
+  //   const fetchFeeAppliedData = async () => {
+  //     try {
+  //       const token = localStorage.getItem("accessToken");
+  //       const orgId = sessionStorage.getItem("organization_id");
+  //       const branchId = sessionStorage.getItem("branch_id");
+  //       const studentId = studentData?.student_id;
+
+  //       const res = await fetch(
+  //         `${ApiUrl.apiurl}HOSTEL/HostelDetailsRetrieveByStudent/?organization_id=${orgId}&branch_id=${branchId}&student_id=${studentId}`,
+  //         {
+  //           headers: {
+  //             "Content-Type": "application/json",
+  //             Authorization: `Bearer ${token}`,
+  //           },
+  //         }
+  //       );
+
+  //       const result = await res.json();
+  //       console.log("API Result:", result);
+
+  //       if (
+  //         result?.data &&
+  //         result.data?.fee_applied_from_id
+  //       ) {
+  //         // 🌟 Set the existing semesters from API
+  //         setSelectedSemesters(result.data.fee_applied_from_id);
+  //       } else {
+  //         setSelectedSemesters([]);
+  //       }
+
+  //     } catch (error) {
+  //       console.error("Error fetching fee_applied_from_id:", error);
+  //     }
+  //   };
+
+  //   fetchFeeAppliedData();
+  // }, [show, studentData]);
+
   const handleMonthToggle = (id) => {
     setMonthStatus((prev) =>
       prev.map((month) =>
@@ -355,6 +391,7 @@ const HostelEdit = ({
     const selectedSemesterIds = monthStatus
       .filter((month) => month.checked)
       .map((month) => month.id);
+    console.log(selectedSemesters);
 
     const payload = {
       organization_id: Number(organizationId),
@@ -366,6 +403,7 @@ const HostelEdit = ({
       room_id: selectedRoom?.value || null,
       bed_id: selectedBed?.value || null,
       choice_semester_ids: selectedSemesterIds,
+      // choice_semester_ids: selectedSemesters || [],
       student_id: Number(studentId),
       hostel_avail: true,
       created_by: Number(userId),
@@ -470,7 +508,10 @@ const HostelEdit = ({
                   <input
                     type="text"
                     className="form-control detail"
-                    value={transportDetails?.admission_no || ""}
+                    value={
+                      transportDetails?.admission_no ||
+                      studentData.college_admission_no
+                    }
                     readOnly
                     disabled
                   />
@@ -508,11 +549,11 @@ const HostelEdit = ({
                   />
                 </div>
                 <div className="col-md-4">
-                  <label className="form-label">College Admission No</label>
+                  <label className="form-label">Registration No</label>
                   <input
                     type="text"
                     className="form-control detail"
-                    value={studentData.college_admission_no || ""}
+                    value={studentData.registration_no || ""}
                     readOnly
                     disabled
                   />

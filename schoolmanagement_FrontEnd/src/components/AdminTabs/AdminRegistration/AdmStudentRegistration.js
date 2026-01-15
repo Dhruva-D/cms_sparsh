@@ -531,7 +531,7 @@ export default function BasicTabs() {
         course: formData.course || courseId || "",
         department: formData.department || departmentId || "",
         semester: formData.semester || semesterId || "",
-        section: formData.addmitted_section || sectionId || "",
+        section: formData.addmitted_section || sectionId || "1",
         admission_no: null,
         first_name: formData.first_name,
         middle_name: formData.middle_name || "",
@@ -571,15 +571,15 @@ export default function BasicTabs() {
       };
 
       const fee_detail = {
-        fee_group: parseInt(formData.feegroup) || 1,
-        fee_applied_from: parseInt(formData.feeappfrom) || 1,
+        fee_group: parseInt(formData.feegroup) || null,
+        fee_applied_from: parseInt(formData.feeappfrom) || null,
       };
 
       const transport_detail = {
         transport_availed: formData.transport_availed || false,
         choice_semester: formData.choice_semester || [],
-        route_id: formData.route_id || 1,
-        route_detail: formData.route_details || 1,
+        route_id: formData.route_id || null,
+        route_detail: formData.route_details || null,
       };
 
       const address_detail = {
@@ -752,9 +752,9 @@ export default function BasicTabs() {
         first_name: formData.first_name || "",
         middle_name: formData.middle_name || "",
         last_name: formData.last_name || "",
-        course: formData.course || "1",
+        course: formData.course || "",
         section: formData.addmitted_section || "1",
-        gender: formData.gender || "1",
+        gender: formData.gender || "",
         date_of_admission: formData.date_of_admission || "",
         date_of_join: formData.doj || "",
         barcode: formData.barcode || "",

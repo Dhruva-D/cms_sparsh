@@ -159,17 +159,47 @@ const HostelEdit = ({
     }
   };
 
+  // const handleHostelAvailedToggle = () => {
+  //   const newValue = !hostelAvailed;
+  //   setHostelAvailed(newValue);
+
+  //   const updatedMonths = monthStatus.map((m) => {
+  //     // 🔒 If semester is PAID (disabled), do NOT change its checked state
+  //     if (m.disabled) {
+  //       return m;
+  //     }
+
+  //     // Otherwise toggle based on Hostel Availed checkbox
+  //     return {
+  //       ...m,
+  //       checked: newValue,
+  //     };
+  //   });
+
+  //   setMonthStatus(updatedMonths);
+  // };
+
   const handleHostelAvailedToggle = () => {
-    const newValue = !hostelAvailed; // toggle value
+    const newValue = !hostelAvailed;
     setHostelAvailed(newValue);
 
-    // Update all semester checkboxes based on toggled status
-    const updatedMonths = monthStatus.map((m) => ({
-      ...m,
-      checked: newValue, // check all if true / uncheck all if false
-    }));
+    // If Hostel Availed is turned OFF → clear only unpaid semesters
+    if (!newValue) {
+      const updatedMonths = monthStatus.map((m) => {
+        // 🔒 Do not touch paid (disabled) semesters
+        if (m.disabled) return m;
 
-    setMonthStatus(updatedMonths);
+        return {
+          ...m,
+          checked: false,
+        };
+      });
+
+      setMonthStatus(updatedMonths);
+    }
+
+    // If Hostel Availed is turned ON → do NOTHING
+    // User will manually select semesters
   };
 
   const currentMonth = new Date().getMonth() + 1;
@@ -224,7 +254,10 @@ const HostelEdit = ({
                 <input
                   type="text"
                   className="form-control detail"
-                  value={transportDetails?.admission_no || ""}
+                  value={
+                    transportDetails?.admission_no ||
+                    studentData.college_admission_no
+                  }
                   readOnly
                   disabled
                 />
@@ -262,11 +295,11 @@ const HostelEdit = ({
                 />
               </div>
               <div className="col-md-4">
-                <label className="form-label">College Admission No</label>
+                <label className="form-label"> Registration No</label>
                 <input
                   type="text"
                   className="form-control detail"
-                  value={studentData.college_admission_no || ""}
+                  value={studentData.registration_no || ""}
                   readOnly
                   disabled
                 />
@@ -319,3 +352,4 @@ const HostelEdit = ({
   );
 };
 export default HostelEdit;
+

@@ -166,9 +166,6 @@ useEffect(() => {
     if (formData.password.trim() === "") {
       newErrors.password = "Password is required";
     }
-    if (!formData.institute || typeof formData.institute === 'string') {
-      newErrors.institute = "Please select an Institute";
-    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -283,30 +280,23 @@ useEffect(() => {
 
       const selectedInstitute = formData.institute;
 
-      console.log("🔍 Form Data:", formData);
-      console.log("🏫 Selected Institute:", selectedInstitute);
-
-      if (!selectedInstitute || typeof selectedInstitute === 'string') {
+      if (!selectedInstitute) {
         alert("Please select an Institute before logging in.");
         setLoading(false);
         return;
       }
-
-      const loginPayload = {
-        username: formData.username,
-        password: formData.password,
-        organization_id: selectedInstitute.organization_id,
-        branch_id: selectedInstitute.branch_id,
-      };
-
-      console.log("📤 Login Payload:", loginPayload);
 
       const loginResponse = await fetch(`${ApiUrl.apiurl}RegisterEmployee/Login/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(loginPayload),
+        body: JSON.stringify({
+          username: formData.username,
+          password: formData.password,
+          organization_id: selectedInstitute.organization_id,
+          branch_id: selectedInstitute.branch_id,
+        }),
       });
 
       if (!loginResponse.ok) {
@@ -348,10 +338,8 @@ useEffect(() => {
       localStorage.setItem("branchName", branch_name);
 
       // --- Step 2: Navigate based on role ---
-      const roleKey = userRole.toLowerCase();
-      switch (roleKey) {
+      switch (userRole) {
         case "staff":
-        case "professor":
           navigate("/staff/dashboard");
           onLogin("staff");
           break;
@@ -477,38 +465,38 @@ useEffect(() => {
                     </InputGroup>
                   </Form.Group>
 
-                  <Form.Group className="mb-4 d-flex flex-column align-items-start w-100">
+                  <Form.Group className="mb-4 ... w-100">
                     <Form.Label className="fw-bold">Institute</Form.Label>
-                    <Form.Select
+                    <Form.Control
+                      list="institutes"
                       name="institute"
-                      value={formData.institute?.value || ""}
+                      value={
+                        formData.institute?.label || formData.institute || ""
+                      }
                       onChange={(e) => {
+                        const input = e.target.value;
                         const selected = instituteOptions.find(
-                          (inst) => inst.value.toString() === e.target.value
+                          (inst) =>
+                            inst.label === input ||
+                            inst.value.toString() === input
                         );
                         setFormData({
                           ...formData,
-                          institute: selected || "",
+                          institute: selected || input,
                         });
                       }}
                       disabled={instituteOptions.length === 1}
-                      isInvalid={!!errors.institute}
                       style={{
                         borderRadius: "2px",
                         minHeight: "38px",
                         width: "100%",
                       }}
-                    >
-                      <option value="">Select Institute...</option>
+                    />
+                    <datalist id="institutes">
                       {instituteOptions.map((inst) => (
-                        <option key={inst.value} value={inst.value}>
-                          {inst.label}
-                        </option>
+                        <option key={inst.value} value={inst.label} />
                       ))}
-                    </Form.Select>
-                    <Form.Control.Feedback type="invalid">
-                      {errors.institute}
-                    </Form.Control.Feedback>
+                    </datalist>
                   </Form.Group>
 
                   {/* Sign In + Forgot Password */}

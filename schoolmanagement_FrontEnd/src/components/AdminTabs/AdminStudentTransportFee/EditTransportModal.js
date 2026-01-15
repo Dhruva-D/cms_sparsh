@@ -1042,6 +1042,7 @@ const handleSaveChanges = async () => {
                         <label className="form-check-label">
                           <input
                             type="checkbox"
+                            className="form-check-input me-2"
                             checked={selectedSemesters.includes(sem)}
                             onChange={() => handleSemesterToggle(sem)}
                             disabled={!transportAvailed || isLocked}

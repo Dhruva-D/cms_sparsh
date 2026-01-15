@@ -130,8 +130,9 @@ const ModalClass = ({ show, onSelectStudent, handleClose }) => {
           id: s.id,
           student_id: s.student_id,
           studentname: s.student_name,
-          school_admission_no: s.college_admission_no,
-          admission_no: s.college_admission_no,
+          // ✅ Correct fields from API
+          registration_no: s.registration_no, // ONMRC Registration No
+          college_admission_no: s.college_admission_no, // Admission No
           rollno: s.enrollment_no,
           batch_code: s.batch_code,
           course_name: s.course_name,

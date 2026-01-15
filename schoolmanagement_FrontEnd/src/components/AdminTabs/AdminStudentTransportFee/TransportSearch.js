@@ -642,38 +642,38 @@ const [searchStudentId, setSearchStudentId] = useState("");
       }
     }
   }, []);
-const handleSelectStudent = async (selectedStudent) => {
-  try {
-    if (!selectedStudent || !selectedStudent.student_id) {
-      console.error(
-        "Student ID missing from selected student:",
-        selectedStudent
-      );
-      return;
-    }
+// const handleSelectStudent = async (selectedStudent) => {
+//   try {
+//     if (!selectedStudent || !selectedStudent.student_id) {
+//       console.error(
+//         "Student ID missing from selected student:",
+//         selectedStudent
+//       );
+//       return;
+//     }
 
-    const sid = selectedStudent.student_id;
+//     const sid = selectedStudent.student_id;
 
-    // Set student ID immediately
-    setStudentId(sid);
+//     // Set student ID immediately
+//     setStudentId(sid);
 
-    // Save name for display (temporary)
-    setStudentName(selectedStudent.student_name || "");
+//     // Save name for display (temporary)
+//     setStudentName(selectedStudent.student_name || "");
 
-    // Store ID in localStorage
-    localStorage.setItem(
-      "selectedClubStudentId",
-      JSON.stringify({ student_id: sid })
-    );
+//     // Store ID in localStorage
+//     localStorage.setItem(
+//       "selectedClubStudentId",
+//       JSON.stringify({ student_id: sid })
+//     );
 
-    // NOW fetch complete details from API
-    await fetchStudentDetails(sid);
+//     // NOW fetch complete details from API
+//     await fetchStudentDetails(sid);
 
-    handleCloseModal();
-  } catch (error) {
-    console.error("Error handling selected student:", error);
-  }
-};
+//     handleCloseModal();
+//   } catch (error) {
+//     console.error("Error handling selected student:", error);
+//   }
+// };
 
 
   // const handleSelectStudent = async (selectedStudent) => {
@@ -783,6 +783,28 @@ const handleSelectStudent = async (selectedStudent) => {
   //   }
   // };
 
+const handleSelectStudent = async (selectedStudent) => {
+  try {
+    if (!selectedStudent || !selectedStudent.student_id) return;
+
+    const sid = String(selectedStudent.student_id);
+
+    // ✅ SET BOTH
+    setStudentId(sid);
+    setSearchStudentId(sid); // 🔥 IMPORTANT FIX
+    setStudentName(selectedStudent.student_name || "");
+
+    localStorage.setItem(
+      "selectedClubStudentId",
+      JSON.stringify({ student_id: sid })
+    );
+
+    await fetchStudentDetails(sid);
+    handleCloseModal();
+  } catch (error) {
+    console.error("Error handling selected student:", error);
+  }
+};
 
  const fetchStudentDetails = async (sid) => {
    try {
@@ -962,79 +984,79 @@ const handleSelectStudent = async (selectedStudent) => {
   //   }
   // };
 
-const handleSearch = async () => {
-  try {
-    const token = localStorage.getItem("accessToken");
-    const organization_id = sessionStorage.getItem("organization_id");
-    const branch_id = sessionStorage.getItem("branch_id");
+// const handleSearch = async () => {
+//   try {
+//     const token = localStorage.getItem("accessToken");
+//     const organization_id = sessionStorage.getItem("organization_id");
+//     const branch_id = sessionStorage.getItem("branch_id");
 
-    if (!token || !organization_id || !branch_id) {
-      alert("Missing required session data");
-      return;
-    }
+//     if (!token || !organization_id || !branch_id) {
+//       alert("Missing required session data");
+//       return;
+//     }
 
-    // 🔄 Clear old results
-    setTransportData([]);
-    setCurrentPage(0);
+//     // 🔄 Clear old results
+//     setTransportData([]);
+//     setCurrentPage(0);
 
-    const queryParams = new URLSearchParams({
-      organization_id,
-      branch_id,
-    });
+//     const queryParams = new URLSearchParams({
+//       organization_id,
+//       branch_id,
+//     });
 
-    // ✅ ONLY use searchStudentId
-    if (searchStudentId?.trim()) {
-      queryParams.append("student_id", searchStudentId.trim());
-    }
+//     // ✅ ONLY use searchStudentId
+//     if (searchStudentId?.trim()) {
+//       queryParams.append("student_id", searchStudentId.trim());
+//     }
 
-    if (classId) {
-      queryParams.append("class_id", classId);
-    }
+//     if (classId) {
+//       queryParams.append("class_id", classId);
+//     }
 
-    if (sectionId) {
-      queryParams.append("section_id", sectionId);
-    }
+//     if (sectionId) {
+//       queryParams.append("section_id", sectionId);
+//     }
 
-    const response = await fetch(
-      `${
-        ApiUrl.apiurl
-      }Transport/GetStudentTransportList/?${queryParams.toString()}`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+//     const response = await fetch(
+//       `${
+//         ApiUrl.apiurl
+//       }Transport/GetStudentTransportList/?${queryParams.toString()}`,
+//       {
+//         method: "GET",
+//         headers: {
+//           Authorization: `Bearer ${token}`,
+//           "Content-Type": "application/json",
+//         },
+//       }
+//     );
 
-    const data = await response.json();
-    console.log("Transport API Response:", data);
+//     const data = await response.json();
+//     console.log("Transport API Response:", data);
 
-    if (response.ok && Array.isArray(data.data)) {
-      const formattedData = data.data.map((item) => ({
-        className: item.course_name,
-        sectionName: item.section_name,
-        rollNo: item.enrollment_no,
-        studentId: item.student_id,
-        studentName: item.student_name,
-        schoolAdmissionNo: item.college_admission_no,
-        barcode: item.barcode,
-        fatherName: item.father_name,
-        motherName: item.mother_name,
-        houseName: item.house_name,
-        transportAvailed: item.transport_availed,
-      }));
+//     if (response.ok && Array.isArray(data.data)) {
+//       const formattedData = data.data.map((item) => ({
+//         className: item.course_name,
+//         sectionName: item.section_name,
+//         rollNo: item.enrollment_no,
+//         studentId: item.student_id,
+//         studentName: item.student_name,
+//         schoolAdmissionNo: item.college_admission_no,
+//         barcode: item.barcode,
+//         fatherName: item.father_name,
+//         motherName: item.mother_name,
+//         houseName: item.house_name,
+//         transportAvailed: item.transport_availed,
+//       }));
 
-      setTransportData(formattedData);
-    } else {
-      setTransportData([]);
-    }
-  } catch (error) {
-    console.error("Error fetching transport data:", error);
-    setTransportData([]);
-  }
-};
+//       setTransportData(formattedData);
+//     } else {
+//       setTransportData([]);
+//     }
+//   } catch (error) {
+//     console.error("Error fetching transport data:", error);
+//     setTransportData([]);
+//   }
+// };
 
 
 
@@ -1074,6 +1096,80 @@ const handleSearch = async () => {
 
   //   fetchSectionData();
   // }, [classId]);
+
+const handleSearch = async () => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    const organization_id = sessionStorage.getItem("organization_id");
+    const branch_id = sessionStorage.getItem("branch_id");
+
+    if (!token || !organization_id || !branch_id) {
+      alert("Missing required session data");
+      return;
+    }
+
+    setTransportData([]);
+    setCurrentPage(0);
+
+    const queryParams = new URLSearchParams({
+      organization_id,
+      branch_id,
+    });
+
+    // ✅ Priority 1: Student selected
+    if (searchStudentId?.trim()) {
+      queryParams.append("student_id", searchStudentId.trim());
+    }
+    // ✅ Priority 2: Other filters
+    else {
+      if (selectedCourse?.value) {
+        queryParams.append("course_id", selectedCourse.value);
+      }
+      if (selectedSection?.value) {
+        queryParams.append("section_id", selectedSection.value);
+      }
+    }
+
+    const response = await fetch(
+      `${
+        ApiUrl.apiurl
+      }Transport/GetStudentTransportList/?${queryParams.toString()}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    if (response.ok && Array.isArray(data.data)) {
+      const formattedData = data.data.map((item) => ({
+        className: item.course_name,
+        sectionName: item.section_name,
+        rollNo: item.enrollment_no,
+        studentId: item.student_id,
+        studentName: item.student_name,
+        schoolAdmissionNo: item.college_admission_no,
+        barcode: item.barcode,
+        fatherName: item.father_name,
+        motherName: item.mother_name,
+        houseName: item.house_name,
+        transportAvailed: item.transport_availed,
+      }));
+
+      setTransportData(formattedData);
+    } else {
+      setTransportData([]);
+    }
+  } catch (error) {
+    console.error("Error fetching transport data:", error);
+    setTransportData([]);
+  }
+};
+
 
  const handleOpenModal = async (student) => {
    setShowModal(true);
