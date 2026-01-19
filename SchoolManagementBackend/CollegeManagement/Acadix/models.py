@@ -264,7 +264,7 @@ class Batch(models.Model):
 class Course(models.Model):   # done
     organization = models.ForeignKey("Organization", on_delete=models.CASCADE, related_name="courses", null=True)
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE, default=1)
-    course_code = models.CharField(max_length=20, unique=True)
+    course_code = models.CharField(max_length=20)
     course_name = models.CharField(max_length=20,null=False)
     description = models.CharField(max_length=250,null=True)
     batch = models.ForeignKey(Batch, on_delete=models.CASCADE)
@@ -275,6 +275,9 @@ class Course(models.Model):   # done
     updated_by = models.PositiveIntegerField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ['batch', 'course_code']
 
     def __str__(self):
         return self.course_name
