@@ -43,6 +43,16 @@ Run the scripts in this exact order:
 \i 04b_gnm_2023_2026_students.sql   -- Inserts 28 students
 ```
 
+### Step 5: Create Student-Related Records
+```sql
+\i 05_student_related_tables.sql    -- Creates Parent, UserLogin, StudentCourse
+```
+
+This step creates the additional tables that the backend normally creates:
+- **Parent**: Links parent_id to student
+- **UserLogin**: Creates login credentials (username: first_name + registration_no, password: first_name)
+- **StudentCourse**: Links student to course for academic tracking
+
 ## Summary
 
 | Batch | Course | Year | Semester | Students |

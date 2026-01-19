@@ -14,9 +14,7 @@ const AuthorisedPickUp = ({ formData, setFormData }) => {
   // Ensure blank row when cleared
   useEffect(() => {
     if (!formData.authorizedpickup || formData.authorizedpickup.length === 0) {
-      const blankRow = [
-        { name: "", relationship: "", Mobile_Number: "", remark: "" },
-      ];
+      const blankRow = [{ name: "", relationship: "", Mobile_Number: "", remark: "" }];
       setAuthorisedPickups(blankRow);
       setFormData((prevData) => ({
         ...prevData,
@@ -34,20 +32,26 @@ const AuthorisedPickUp = ({ formData, setFormData }) => {
       : [{ name: "", relationship: "", Mobile_Number: "", remark: "" }]
   );
 
-  // 10-28-2025
+  // 12-17-2025
   // useEffect(() => {
   //   const fetchAuthorizedPickups = async () => {
   //     try {
   //       // ✅ Get organization_id and branch_id from sessionStorage
   //       const organization_id = sessionStorage.getItem("organization_id") || 1;
   //       const branch_id = sessionStorage.getItem("branch_id") || 1;
+  //       const token = localStorage.getItem("accessToken"); // ✅ token
 
   //       // ✅ Construct the updated API URL
   //       const apiUrl = `${ApiUrl.apiurl}StudentRegistrationApi/GetStudentDetailsBasedOnId/?organization_id=${organization_id}&branch_id=${branch_id}&student_id=${id}`;
 
   //       console.log("📡 Fetching Authorized Pickup Data From:", apiUrl);
 
-  //       const response = await fetch(apiUrl);
+  //       const response = await fetch(apiUrl, {
+  //         headers: {
+  //           Authorization: `Bearer ${token}`, // ✅ token passed
+  //         },
+  //       });
+
   //       const data = await response.json();
 
   //       if (
@@ -79,42 +83,35 @@ const AuthorisedPickUp = ({ formData, setFormData }) => {
   //   }
   // }, [id, formData?.authorizedpickup?.length, setFormData]);
 
-  // 12-17-2025
+  // 16-01-2026
   useEffect(() => {
     const fetchAuthorizedPickups = async () => {
       try {
-        // ✅ Get organization_id and branch_id from sessionStorage
         const organization_id = sessionStorage.getItem("organization_id") || 1;
         const branch_id = sessionStorage.getItem("branch_id") || 1;
-        const token = localStorage.getItem("accessToken"); // ✅ token
+        const token = localStorage.getItem("accessToken");
 
-        // ✅ Construct the updated API URL
         const apiUrl = `${ApiUrl.apiurl}StudentRegistrationApi/GetStudentDetailsBasedOnId/?organization_id=${organization_id}&branch_id=${branch_id}&student_id=${id}`;
 
         console.log("📡 Fetching Authorized Pickup Data From:", apiUrl);
 
         const response = await fetch(apiUrl, {
           headers: {
-            Authorization: `Bearer ${token}`, // ✅ token passed
+            Authorization: `Bearer ${token}`,
           },
         });
 
         const data = await response.json();
 
-        if (
-          data?.data?.authorized_pickup &&
-          (!formData?.authorizedpickup ||
-            formData.authorizedpickup.length === 0)
-        ) {
+        if (data?.data?.authorized_pickup) {
           const updatedPickups = data.data.authorized_pickup.map((item) => ({
             name: item.name || "",
             relationship: item.relationship || "",
             Mobile_Number: item.mobile_number || "",
             remark: item.remark || "",
-            isNew: false, // Mark as existing row
+            isNew: false,
           }));
 
-          // ✅ Update both local state and formData
           setAuthorisedPickups(updatedPickups);
           setFormData((prevData) => ({
             ...prevData,
@@ -126,10 +123,13 @@ const AuthorisedPickUp = ({ formData, setFormData }) => {
       }
     };
 
-    if (id) {
+    // 🔒 Only fetch when:
+    // 1. student id exists
+    // 2. authorizedpickup is empty
+    if (id && (!formData?.authorizedpickup || formData.authorizedpickup.length === 0)) {
       fetchAuthorizedPickups();
     }
-  }, [id, formData?.authorizedpickup?.length, setFormData]);
+  }, [id]);   // ✅ ONLY id in dependency
 
   // Function to handle adding a new row with validation
   const handleAddRow = () => {
@@ -146,22 +146,9 @@ const AuthorisedPickUp = ({ formData, setFormData }) => {
 
     setAuthorisedPickups([
       ...authorisedPickups,
-      {
-        name: "",
-        relationship: "",
-        Mobile_Number: "",
-        remark: "",
-        isNew: true,
-      },
+      { name: "", relationship: "", Mobile_Number: "", remark: "", isNew: true },
     ]);
   };
-
-  // Function to handle removing a row
-  // const handleRemoveRow = (index) => {
-  //   const updatedRows = authorisedPickups.filter((_, i) => i !== index);
-  //   setAuthorisedPickups(updatedRows);
-  //   setFormData({ ...formData, authorizedpickup: updatedRows }); // Update formData
-  // };
 
   //New Code 01082025
   const handleRemoveRow = (index) => {
