@@ -584,7 +584,7 @@ const StaffInfo = ({ goToTab, setAddressDetails }) => {
                       </label>
                       <div className="d-flex align-items-center">
                         <input
-                          type="text"
+                          type="email"
                           id="email-id"
                           className="form-control detail"
                           placeholder="Enter email id"
@@ -602,7 +602,7 @@ const StaffInfo = ({ goToTab, setAddressDetails }) => {
                       </label>
                       <div className="d-flex align-items-center">
                         <input
-                          type="text"
+                          type="email"
                           id="official-email-id"
                           className="form-control detail"
                           placeholder="Enter official email id"

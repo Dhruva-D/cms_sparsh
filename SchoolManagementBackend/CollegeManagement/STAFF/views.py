@@ -163,6 +163,12 @@ class StaffRegistrationBasicInfoCreateAPIView(CreateAPIView):
                 staffcreateInstance.save()
 
             else:
+                # Check if email already exists in UserLogin to prevent 500 error
+                email_to_check = serializer.validated_data.get('email')
+                if UserLogin.objects.filter(user_name=email_to_check).exists():
+                    return Response({'message': f'Email "{email_to_check}" is already associated with an account. Please use a different email.'}, 
+                                    status=status.HTTP_400_BAD_REQUEST)
+
                 staffcreateInstance = EmployeeMaster.objects.create(
                     organization= serializer.validated_data.get('organization'),
                     branch= serializer.validated_data.get('branch'),
