@@ -27,89 +27,60 @@ const AdmAttendanceEntry = ({ formData, setFormData }) => {
 
   const { OrganizationList, error: orgError } = useFetchOrganizationList();
   const [selectedOrganization, setSelectedOrganization] = useState(null);
-  const {
-    BatchList,
-    loading: batchLoading,
-    error: batchError,
-  } = useFetchSessionList(
+  const { BatchList, loading: batchLoading, error: batchError } = useFetchSessionList(
     selectedOrganization?.value,
     selectedOrgBranch?.value
   );
 
   const [selectedSession, setSelectedSession] = useState(null);
-  const {
-    CourseList,
-    loading: courseLoading,
-    error: courseError,
-  } = useFetchCourseByFilter(
+  const { CourseList, loading: courseLoading, error: courseError } = useFetchCourseByFilter(
     selectedOrganization?.value, // ✅ pass ID, not object
-    selectedSession // batch_id
+    selectedSession               // batch_id
   );
   const [selectedCourse, setSelectedCourse] = useState(null);
-  const {
-    BranchList,
-    loading: branchLoading,
-    error: branchError,
-  } = useFetchBranch(
-    selectedOrganization?.value, // organization_id
-    selectedOrgBranch?.value, // branch_id
-    selectedSession, // batch_id
-    selectedCourse // course_id
+  const { BranchList, loading: branchLoading, error: branchError } = useFetchBranch(
+    selectedOrganization?.value,  // organization_id
+    selectedOrgBranch?.value,     // branch_id
+    selectedSession,              // batch_id
+    selectedCourse                // course_id
   );
 
   // ✅ Call hook using correct IDs
-  const {
-    AcademicYearList,
-    loading: academicYearLoading,
-    error: academicYearError,
-  } = useFetchAcademicYearByFilter(
-    selectedOrganization?.value, // organization_id
-    selectedOrgBranch?.value, // branch_id
-    selectedSession, // batch_id
-    selectedCourse, // course_id
-    selectedDepartment // department_id
-  );
+  const { AcademicYearList, loading: academicYearLoading, error: academicYearError } =
+    useFetchAcademicYearByFilter(
+      selectedOrganization?.value,  // organization_id
+      selectedOrgBranch?.value,     // branch_id
+      selectedSession,              // batch_id
+      selectedCourse,               // course_id
+      selectedDepartment            // department_id
+    );
 
   const [selectedAcademicYear, setSelectedAcademicYear] = useState(null);
-  const {
-    SemesterList,
-    loading: semesterLoading,
-    error: semesterError,
-  } = useFetchSemesterByFilter(
-    selectedOrganization?.value, // organization_id
-    selectedOrgBranch?.value, // branch_id
-    selectedSession, // batch_id
-    selectedCourse, // course_id
-    selectedDepartment, // department_id
-    selectedAcademicYear // academic_year_id
-  );
+  const { SemesterList, loading: semesterLoading, error: semesterError } =
+    useFetchSemesterByFilter(
+      selectedOrganization?.value,  // organization_id
+      selectedOrgBranch?.value,     // branch_id
+      selectedSession,              // batch_id
+      selectedCourse,               // course_id
+      selectedDepartment,           // department_id
+      selectedAcademicYear          // academic_year_id
+    );
 
   const [selectedSemester, setSelectedSemester] = useState(null);
-  const {
-    SectionList,
-    loading: sectionFilterLoading,
-    error: sectionError,
-  } = useFetchSectionByFilter(
-    selectedOrganization?.value, // organization_id
-    selectedOrgBranch?.value, // branch_id
-    selectedSession, // batch_id
-    selectedCourse, // course_id
-    selectedDepartment, // department_id
-    selectedAcademicYear, // academic_year_id
-    selectedSemester // semester_id
-  );
+  const { SectionList, loading: sectionFilterLoading, error: sectionError } =
+    useFetchSectionByFilter(
+      selectedOrganization?.value,  // organization_id
+      selectedOrgBranch?.value,     // branch_id
+      selectedSession,              // batch_id
+      selectedCourse,               // course_id
+      selectedDepartment,           // department_id
+      selectedAcademicYear,         // academic_year_id
+      selectedSemester              // semester_id
+    );
 
-  const {
-    genders,
-    loading: genderLoading,
-    error: genderError,
-  } = useFetchGenderList();
+  const { genders, loading: genderLoading, error: genderError } = useFetchGenderList();
   const [selectedSectionFiltered, setSelectedSectionFiltered] = useState(null);
-  const {
-    categories,
-    loading: loadingCategories,
-    error: categoryError,
-  } = useFetchCategories();
+  const { categories, loading: loadingCategories, error: categoryError } = useFetchCategories();
   const {
     branches: organizationBranches,
     loading: orgBranchLoading,
@@ -162,6 +133,7 @@ const AdmAttendanceEntry = ({ formData, setFormData }) => {
     }
   }, []);
 
+
   useEffect(() => {
     const fetchFullStudentData = async () => {
       try {
@@ -175,9 +147,7 @@ const AdmAttendanceEntry = ({ formData, setFormData }) => {
         const branchId = sessionStorage.getItem("branch_id");
 
         if (!organizationId || !branchId) {
-          console.error(
-            "Organization ID or Branch ID not found in session storage"
-          );
+          console.error("Organization ID or Branch ID not found in session storage");
           return;
         }
 
@@ -187,7 +157,8 @@ const AdmAttendanceEntry = ({ formData, setFormData }) => {
           return;
         }
 
-        const apiUrl = `${ApiUrl.apiurl}StudentRegistrationApi/GetAllSTUDENTList/?organization_id=${organizationId}&branch_id=${branchId}&academic_year_id=${academicYearId}`;
+        // const apiUrl = `${ApiUrl.apiurl}StudentRegistrationApi/GetAllSTUDENTList/?organization_id=${organizationId}&branch_id=${branchId}&academic_year_id=${academicYearId}`;
+        const apiUrl = `${ApiUrl.apiurl}StudentRegistrationApi/GetAllSTUDENTList/?organization_id=${organizationId}&branch_id=${branchId}`;
 
         console.log("Fetch Full Student API URL:", apiUrl);
 
@@ -280,9 +251,7 @@ const AdmAttendanceEntry = ({ formData, setFormData }) => {
       appendIfValid("mother_name", filters.motherName);
       appendIfValid("school_admission_no", filters.schoolAdmissionNo);
 
-      const apiUrl = `${
-        ApiUrl.apiurl
-      }StudentRegistrationApi/GetAllSTUDENTList/?${params.toString()}`;
+      const apiUrl = `${ApiUrl.apiurl}StudentRegistrationApi/GetAllSTUDENTList/?${params.toString()}`;
       console.log("Search API URL:", apiUrl);
 
       const response = await fetch(apiUrl, {
@@ -306,6 +275,7 @@ const AdmAttendanceEntry = ({ formData, setFormData }) => {
         setStudentData([]);
         setFullStudentData([]);
       }
+
     } catch (error) {
       console.error("Search API Error:", error);
       setStudentData([]);
@@ -313,11 +283,14 @@ const AdmAttendanceEntry = ({ formData, setFormData }) => {
     }
   };
 
+  useEffect(() => {
+    handleSearch();
+  }, []);
+
   const flattenStudentData = (data) => {
     return data.map((student, index) => {
       const basic = student.studentBasicDetails || {};
-      const address =
-        (student.addressDetails && student.addressDetails[0]) || {};
+      const address = (student.addressDetails && student.addressDetails[0]) || {};
       const fee = (student.feeDetails && student.feeDetails[0]) || {};
 
       return {
@@ -421,9 +394,7 @@ const AdmAttendanceEntry = ({ formData, setFormData }) => {
       const fileInput = document.getElementById("profilePic");
       if (fileInput) fileInput.value = "";
 
-      const previewImg = document.querySelector(
-        'img[alt="Profile Picture Preview"]'
-      );
+      const previewImg = document.querySelector('img[alt="Profile Picture Preview"]');
       if (previewImg) previewImg.removeAttribute("src");
     } catch (err) {
       console.warn("Error clearing profile pic:", err);
@@ -446,6 +417,7 @@ const AdmAttendanceEntry = ({ formData, setFormData }) => {
   const handlePageChange = ({ selected }) => {
     setCurrentPage(selected + 1); // react-paginate is 0-based, so add 1
   };
+
 
   return (
     <div className="container-fluid">
@@ -532,7 +504,7 @@ const AdmAttendanceEntry = ({ formData, setFormData }) => {
                           placeholder="Enter admission number"
                           value={filters.admissionNo}
                           onChange={handleInputChange}
-                        />{" "}
+                        />
                       </div>
                       <div className="col-12 col-md-3 mb-2">
                         <label htmlFor="barcode" className="form-label">
@@ -546,7 +518,7 @@ const AdmAttendanceEntry = ({ formData, setFormData }) => {
                           placeholder="Enter barcode"
                           value={filters.barcode}
                           onChange={handleInputChange}
-                        />{" "}
+                        />
                       </div>
 
                       {/* 🔹 Session Dropdown */}
@@ -561,8 +533,8 @@ const AdmAttendanceEntry = ({ formData, setFormData }) => {
                             !selectedOrganization || !selectedOrgBranch
                               ? "Select Branch first"
                               : batchLoading
-                              ? "Loading Session..."
-                              : "Select Session"
+                                ? "Loading Session..."
+                                : "Select Session"
                           }
                           isDisabled={batchLoading}
                           isLoading={batchLoading}
@@ -573,23 +545,17 @@ const AdmAttendanceEntry = ({ formData, setFormData }) => {
                           value={
                             selectedSession
                               ? {
-                                  value: selectedSession,
-                                  label:
-                                    BatchList.find(
-                                      (b) => b.id === selectedSession
-                                    )?.batch_description || "",
-                                }
+                                value: selectedSession,
+                                label:
+                                  BatchList.find((b) => b.id === selectedSession)
+                                    ?.batch_description || "",
+                              }
                               : null
                           }
                           onChange={(selectedOption) => {
-                            const value = selectedOption
-                              ? selectedOption.value
-                              : null;
+                            const value = selectedOption ? selectedOption.value : null;
                             setSelectedSession(value);
-                            setFilters((prev) => ({
-                              ...prev,
-                              sessionId: value,
-                            }));
+                            setFilters((prev) => ({ ...prev, sessionId: value }));
                           }}
                         />
                       </div>
@@ -602,34 +568,20 @@ const AdmAttendanceEntry = ({ formData, setFormData }) => {
                           id="admitted-class"
                           className="detail"
                           classNamePrefix="detail"
-                          placeholder={
-                            !selectedSession
-                              ? "Select Session first"
-                              : "Select Course"
-                          }
+                          placeholder={!selectedSession ? "Select Session first" : "Select Course"}
                           isDisabled={!selectedOrganization || !selectedSession}
                           isLoading={courseLoading}
                           options={CourseList.map((course) => ({
                             value: course.id,
                             label: `${course.course_name}`,
                           }))}
-                          value={
-                            CourseList.map((course) => ({
-                              value: course.id,
-                              label: course.course_name,
-                            })).find(
-                              (option) => option.value === selectedCourse
-                            ) || null
-                          }
+                          value={CourseList
+                            .map((course) => ({ value: course.id, label: course.course_name }))
+                            .find((option) => option.value === selectedCourse) || null}
                           onChange={(selectedOption) => {
-                            const value = selectedOption
-                              ? selectedOption.value
-                              : null;
+                            const value = selectedOption ? selectedOption.value : null;
                             setSelectedCourse(value);
-                            setFilters((prev) => ({
-                              ...prev,
-                              courseId: value,
-                            }));
+                            setFilters((prev) => ({ ...prev, courseId: value }));
                             // ✅ Removed the line that resets branch (no hiding anymore)
                           }}
                         />
@@ -643,16 +595,8 @@ const AdmAttendanceEntry = ({ formData, setFormData }) => {
                           id="department"
                           className="detail"
                           classNamePrefix="detail"
-                          placeholder={
-                            !selectedCourse
-                              ? "Select Course first"
-                              : "Select Department"
-                          }
-                          isDisabled={
-                            !selectedOrganization ||
-                            !selectedSession ||
-                            !selectedCourse
-                          }
+                          placeholder={!selectedCourse ? "Select Course first" : "Select Department"}
+                          isDisabled={!selectedOrganization || !selectedSession || !selectedCourse}
                           isLoading={branchLoading}
                           options={
                             BranchList.map((dept) => ({
@@ -664,19 +608,12 @@ const AdmAttendanceEntry = ({ formData, setFormData }) => {
                             BranchList.map((dept) => ({
                               value: dept.id,
                               label: `${dept.department_description}`,
-                            })).find(
-                              (option) => option.value === selectedDepartment
-                            ) || null
+                            })).find((option) => option.value === selectedDepartment) || null
                           }
                           onChange={(selectedOption) => {
-                            const value = selectedOption
-                              ? selectedOption.value
-                              : null;
+                            const value = selectedOption ? selectedOption.value : null;
                             setSelectedDepartment(value);
-                            setFilters((prev) => ({
-                              ...prev,
-                              branchId: value,
-                            }));
+                            setFilters((prev) => ({ ...prev, branchId: value }));
                           }}
                         />
                       </div>
@@ -689,17 +626,8 @@ const AdmAttendanceEntry = ({ formData, setFormData }) => {
                           id="academic-year"
                           className="detail"
                           classNamePrefix="detail"
-                          placeholder={
-                            !selectedDepartment
-                              ? "Select Department first"
-                              : "Select Academic Year"
-                          }
-                          isDisabled={
-                            !selectedOrganization ||
-                            !selectedSession ||
-                            !selectedCourse ||
-                            !selectedDepartment
-                          }
+                          placeholder={!selectedDepartment ? "Select Department first" : "Select Academic Year"}
+                          isDisabled={!selectedOrganization || !selectedSession || !selectedCourse || !selectedDepartment}
                           isLoading={academicYearLoading}
                           options={
                             AcademicYearList.map((year) => ({
@@ -711,19 +639,12 @@ const AdmAttendanceEntry = ({ formData, setFormData }) => {
                             AcademicYearList.map((year) => ({
                               value: year.id,
                               label: `${year.academic_year_description}`,
-                            })).find(
-                              (option) => option.value === selectedAcademicYear
-                            ) || null
+                            })).find((option) => option.value === selectedAcademicYear) || null
                           }
                           onChange={(selectedOption) => {
-                            const value = selectedOption
-                              ? selectedOption.value
-                              : "";
+                            const value = selectedOption ? selectedOption.value : "";
                             setSelectedAcademicYear(value);
-                            setFilters((prev) => ({
-                              ...prev,
-                              academicYearId: value,
-                            }));
+                            setFilters((prev) => ({ ...prev, academicYearId: value }));
                           }}
                         />
                       </div>
@@ -736,11 +657,7 @@ const AdmAttendanceEntry = ({ formData, setFormData }) => {
                           id="semester"
                           className="detail"
                           classNamePrefix="detail"
-                          placeholder={
-                            !selectedAcademicYear
-                              ? "Select Academic Year first"
-                              : "Select Semester"
-                          }
+                          placeholder={!selectedAcademicYear ? "Select Academic Year first" : "Select Semester"}
                           isDisabled={
                             !selectedOrganization ||
                             !selectedSession ||
@@ -759,19 +676,12 @@ const AdmAttendanceEntry = ({ formData, setFormData }) => {
                             SemesterList.map((sem) => ({
                               value: sem.id,
                               label: `${sem.semester_description}`,
-                            })).find(
-                              (option) => option.value === selectedSemester
-                            ) || null
+                            })).find((option) => option.value === selectedSemester) || null
                           }
                           onChange={(selectedOption) => {
-                            const value = selectedOption
-                              ? selectedOption.value
-                              : "";
+                            const value = selectedOption ? selectedOption.value : "";
                             setSelectedSemester(value);
-                            setFilters((prev) => ({
-                              ...prev,
-                              semesterId: value,
-                            }));
+                            setFilters((prev) => ({ ...prev, semesterId: value }));
                           }}
                         />
                       </div>
@@ -784,11 +694,7 @@ const AdmAttendanceEntry = ({ formData, setFormData }) => {
                           id="section"
                           className="detail"
                           classNamePrefix="detail"
-                          placeholder={
-                            !selectedSemester
-                              ? "Select Semester first"
-                              : "Select Section"
-                          }
+                          placeholder={!selectedSemester ? "Select Semester first" : "Select Section"}
                           isDisabled={
                             !selectedOrganization ||
                             !selectedSession ||
@@ -808,20 +714,12 @@ const AdmAttendanceEntry = ({ formData, setFormData }) => {
                             SectionList.map((sec) => ({
                               value: sec.id,
                               label: `${sec.section_name}`,
-                            })).find(
-                              (option) =>
-                                option.value === selectedSectionFiltered
-                            ) || null
+                            })).find((option) => option.value === selectedSectionFiltered) || null
                           }
                           onChange={(selectedOption) => {
-                            const value = selectedOption
-                              ? selectedOption.value
-                              : "";
+                            const value = selectedOption ? selectedOption.value : "";
                             setSelectedSectionFiltered(value);
-                            setFilters((prev) => ({
-                              ...prev,
-                              sectionId: value,
-                            }));
+                            setFilters((prev) => ({ ...prev, sectionId: value }));
                           }}
                         />
                       </div>
@@ -866,37 +764,31 @@ const AdmAttendanceEntry = ({ formData, setFormData }) => {
                             genderLoading
                               ? "Loading genders..."
                               : genderError
-                              ? "Error loading genders"
-                              : "Select Gender"
+                                ? "Error loading genders"
+                                : "Select Gender"
                           }
                           isLoading={genderLoading}
                           isDisabled={genderLoading || !!genderError}
                           options={
                             Array.isArray(genders)
                               ? genders.map((g) => ({
-                                  value: g.id,
-                                  label: g.gender_name,
-                                }))
+                                value: g.id,
+                                label: g.gender_name,
+                              }))
                               : []
                           }
                           value={
                             Array.isArray(genders)
                               ? genders
-                                  .map((g) => ({
-                                    value: g.id,
-                                    label: g.gender_name,
-                                  }))
-                                  .find(
-                                    (opt) =>
-                                      Number(opt.value) ===
-                                      Number(filters.gender)
-                                  ) || null
+                                .map((g) => ({
+                                  value: g.id,
+                                  label: g.gender_name,
+                                }))
+                                .find((opt) => Number(opt.value) === Number(filters.gender)) || null
                               : null
                           }
                           onChange={(selectedOption) => {
-                            const value = selectedOption
-                              ? selectedOption.value
-                              : "";
+                            const value = selectedOption ? selectedOption.value : "";
                             setFilters((prev) => ({
                               ...prev,
                               gender: value, // ✅ updates gender filter value
@@ -986,8 +878,7 @@ const AdmAttendanceEntry = ({ formData, setFormData }) => {
                       <tbody>
                         {currentRows.length > 0 ? (
                           currentRows.map((student, index) => {
-                            const studentBasicDetails =
-                              student?.studentBasicDetails;
+                            const studentBasicDetails = student?.studentBasicDetails;
 
                             return (
                               <tr key={index}>
@@ -998,44 +889,18 @@ const AdmAttendanceEntry = ({ formData, setFormData }) => {
               ${studentBasicDetails?.middle_name || ""} 
               ${studentBasicDetails?.last_name || ""}`}
                                 </td>
-                                <td>
-                                  {studentBasicDetails?.registration_no || "—"}
-                                </td>
-                                <td>
-                                  {studentBasicDetails?.admission_no || "—"}
-                                </td>
-                                <td>
-                                  {studentBasicDetails?.batch_description ||
-                                    "—"}
-                                </td>
-                                <td>
-                                  {studentBasicDetails?.course_name || "—"}
-                                </td>
-                                <td>
-                                  {studentBasicDetails?.department_description ||
-                                    "—"}
-                                </td>
-                                <td>
-                                  {studentBasicDetails?.academic_year_description ||
-                                    "—"}
-                                </td>
-                                <td>
-                                  {studentBasicDetails?.semester_description ||
-                                    "—"}
-                                </td>
-                                <td>
-                                  {studentBasicDetails?.section_name || "—"}
-                                </td>
-                                <td>
-                                  {studentBasicDetails?.father_name || "—"}
-                                </td>
-                                <td>
-                                  {studentBasicDetails?.mother_name || "—"}
-                                </td>
+                                <td>{studentBasicDetails?.registration_no || "—"}</td>
+                                <td>{studentBasicDetails?.admission_no || "—"}</td>
+                                <td>{studentBasicDetails?.batch_description || "—"}</td>
+                                <td>{studentBasicDetails?.course_name || "—"}</td>
+                                <td>{studentBasicDetails?.department_description || "—"}</td>
+                                <td>{studentBasicDetails?.academic_year_description || "—"}</td>
+                                <td>{studentBasicDetails?.semester_description || "—"}</td>
+                                <td>{studentBasicDetails?.section_name || "—"}</td>
+                                <td>{studentBasicDetails?.father_name || "—"}</td>
+                                <td>{studentBasicDetails?.mother_name || "—"}</td>
                                 <td>{studentBasicDetails?.barcode || "—"}</td>
-                                <td>
-                                  {studentBasicDetails?.category_name || "—"}
-                                </td>
+                                <td>{studentBasicDetails?.category_name || "—"}</td>
 
                                 <td>
                                   {studentBasicDetails?.id ? (
