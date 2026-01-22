@@ -1708,7 +1708,7 @@ class StaffLanguageDetailsRetrieveAPIView(RetrieveAPIView):
                                                                     branch=branch_id,
                                                                     is_active=True)
                 except EmployeeLanguage.DoesNotExist:
-                    return Response({"message": "No Employee Found !!!"}, status=status.HTTP_404_NOT_FOUND)
+                    return Response({"message": "No Record found"}, status=status.HTTP_204_NO_CONTENT)
             else:
                 return Response({"message": "organization_id, branch_id and employee_id is required !!!"},
                                 status=status.HTTP_404_NOT_FOUND)
@@ -1718,7 +1718,6 @@ class StaffLanguageDetailsRetrieveAPIView(RetrieveAPIView):
             #     EmployeeLanguageInstance = EmployeeLanguage.objects.get(employee_id=employee_id,is_active=True)
             # except:
             #     return Response({'message':'success','data':'No Record found'},status=status.HTTP_204_NO_CONTENT)
-
 
 
 
