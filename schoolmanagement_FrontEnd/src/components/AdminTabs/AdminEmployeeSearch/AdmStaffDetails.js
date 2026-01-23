@@ -182,44 +182,193 @@ export default function BasicTabs() {
   }, []);
 
   const handleSave = async () => {
-    const employeeId = localStorage.getItem("employeeId"); // Get employeeId from localStorage
-    const createdBy = sessionStorage.getItem("userId"); // Get userId from sessionStorage
+    const employeeId = localStorage.getItem("employeeId");
+    const employeeTypeId = localStorage.getItem("employeeTypeId");
+    const userId = sessionStorage.getItem("userId");
+    const orgId = localStorage.getItem("orgId");
+    const branchId = localStorage.getItem("branchId");
 
-    const payload = {
-      created_by: parseInt(createdBy), // Ensure integer type if API expects int
-      experience_details: experienceData.map((item) => ({
-        experience_id: 0,
-        previous_company_worked: item.organization,
-        date_from: item.monthYearFrom,
-        date_to: item.monthYearTo,
-        reason_for_leaving: item.reasonForLeaving,
-        experience_letter_provided: item.experienceLetterProvided,
-      })),
-    };
+    if (!employeeId) {
+      alert("❌ Please complete the Staff Basic Info tab first!");
+      return;
+    }
+
+    if (!userId) {
+      alert("❌ User session expired. Please login again.");
+      return;
+    }
+
+    console.log("=== 💾 Starting Save All Staff Data ===");
+
+    // Debug: Show what data we have
+    console.log("📊 Current State Data:");
+    console.log("  - experienceData:", experienceData);
+    console.log("  - documentDetails:", documentDetails);
+    console.log("  - relationDetails:", relationDetails);
+    console.log("  - educationData:", educationData);
+    console.log("  - courseDetails:", courseDetails);
+    console.log("  - languageData:", languageData);
+
+    let savedSections = [];
+    let failedSections = [];
 
     try {
-      const orgId = localStorage.getItem("orgId");
-      const branchId = localStorage.getItem("branchId");
-
-      const response = await fetch(
-        `${ApiUrl.apiurl}STAFF/RegistrationEXPERIENCECreateUpdate/?organization_id=${orgId}&branch_id=${branchId}&employee_id=${employeeId}`,
-        {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
+      // Save Experience
+      if (experienceData && experienceData.length > 0) {
+        try {
+          const expResponse = await fetch(
+            `${ApiUrl.apiurl}STAFF/RegistrationEXPERIENCECreateUpdate/?organization_id=${orgId}&branch_id=${branchId}&employee_id=${employeeId}`,
+            {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                created_by: parseInt(userId),
+                experience_details: experienceData.map((item) => ({
+                  experience_id: 0,
+                  previous_company_worked: item.organization,
+                  date_from: item.monthYearFrom,
+                  date_to: item.monthYearTo,
+                  reason_for_leaving: item.reasonForLeaving,
+                  experience_letter_provided: item.experienceLetterProvided,
+                })),
+              }),
+            }
+          );
+          const expResult = await expResponse.json();
+          if (expResponse.ok && expResult.message?.toLowerCase() === "success") {
+            savedSections.push("Experience");
+          } else {
+            failedSections.push("Experience");
+          }
+        } catch (error) {
+          failedSections.push("Experience");
         }
-      );
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
       }
 
-      const result = await response.json();
-      console.log("API Success:", result);
-      alert("Data saved successfully!");
+      // Save Documents  
+      if (documentDetails && documentDetails.length > 0) {
+        try {
+          const docResponse = await fetch(
+            `${ApiUrl.apiurl}STAFF/RegistrationDocumentUploadCreateUpdate/?organization_id=${orgId}&branch_id=${branchId}&employee_id=${employeeId}`,
+            {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ created_by: userId, document_details: documentDetails }),
+            }
+          );
+          const docResult = await docResponse.json();
+          if (docResponse.ok && docResult.message?.toLowerCase() === "success") {
+            savedSections.push("Documents");
+          } else {
+            failedSections.push("Documents");
+          }
+        } catch (error) {
+          failedSections.push("Documents");
+        }
+      }
+
+      // Save Family
+      if (relationDetails && relationDetails.length > 0) {
+        try {
+          const relationResponse = await fetch(
+            `${ApiUrl.apiurl}STAFF/RegistrationRelationCreateUpdate/?organization_id=${orgId}&branch_id=${branchId}&employee_id=${employeeId}`,
+            {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ created_by: userId, relation_details: relationDetails }),
+            }
+          );
+          const relationResult = await relationResponse.json();
+          if (relationResponse.ok && relationResult.message?.toLowerCase() === "success") {
+            savedSections.push("Family");
+          } else {
+            failedSections.push("Family");
+          }
+        } catch (error) {
+          failedSections.push("Family");
+        }
+      }
+
+      // Save Education
+      if (educationData && educationData.length > 0) {
+        try {
+          const eduResponse = await fetch(
+            `${ApiUrl.apiurl}STAFF/RegistrationEducationCreateUpdate/?organization_id=${orgId}&branch_id=${branchId}&employee_id=${employeeId}`,
+            {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ created_by: userId, education_details: educationData }),
+            }
+          );
+          const eduResult = await eduResponse.json();
+          if (eduResponse.ok && eduResult.message?.toLowerCase() === "success") {
+            savedSections.push("Education");
+          } else {
+            failedSections.push("Education");
+          }
+        } catch (error) {
+          failedSections.push("Education");
+        }
+      }
+
+      // Save Courses
+      if (courseDetails && courseDetails.length > 0) {
+        try {
+          const courseResponse = await fetch(
+            `${ApiUrl.apiurl}STAFF/RegistrationCourseCreateUpdate/?organization_id=${orgId}&branch_id=${branchId}&employee_id=${employeeId}`,
+            {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ created_by: userId, course_details: courseDetails }),
+            }
+          );
+          const courseResult = await courseResponse.json();
+          if (courseResponse.ok && courseResult.message?.toLowerCase() === "success") {
+            savedSections.push("Courses");
+          } else {
+            failedSections.push("Courses");
+          }
+        } catch (error) {
+          failedSections.push("Courses");
+        }
+      }
+
+      // Save Languages
+      if (languageData) {
+        try {
+          const langResponse = await fetch(
+            `${ApiUrl.apiurl}STAFF/RegistrationLanguageCreateUpdate/?organization_id=${orgId}&branch_id=${branchId}&employee_id=${employeeId}`,
+            {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ created_by: userId, language_data: languageData }),
+            }
+          );
+          const langResult = await langResponse.json();
+          if (langResponse.ok && langResult.message?.toLowerCase() === "success") {
+            savedSections.push("Languages");
+          } else {
+            failedSections.push("Languages");
+          }
+        } catch (error) {
+          failedSections.push("Languages");
+        }
+      }
+
+      console.log("✅ Saved:", savedSections);
+      console.log("❌ Failed:", failedSections);
+
+      if (failedSections.length === 0) {
+        alert(`✅ All staff data saved successfully!\n\nSaved: ${savedSections.join(", ") || "None"}`);
+        localStorage.removeItem("employeeId");
+        localStorage.removeItem("employeeTypeId");
+        window.location.href = "/admin/employee-search";
+      } else {
+        alert(`⚠️ Partial save:\n✅ Saved: ${savedSections.join(", ") || "None"}\n❌ Failed: ${failedSections.join(", ")}`);
+      }
     } catch (error) {
-      console.error("API Error:", error);
-      alert("Error saving data!");
+      console.error("❌ Save Error:", error);
+      alert(`❌ Error: ${error.message}\nSaved: ${savedSections.join(", ") || "None"}`);
     }
   };
 

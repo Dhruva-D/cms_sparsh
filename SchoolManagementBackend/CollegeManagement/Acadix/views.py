@@ -11209,16 +11209,26 @@ class StudentRegistrationCreate(CreateAPIView, UtilityGroupMixin):
                 #     password = ''.join(secrets.choice(chars) for _ in range(length))
                 #     return password
                 def send_welcome_email():
-                    send_mail(
-                        subject="Welcome to Acadix!",
-                        message=f"Hello {student_instance.first_name}, your registration was successful!"
-                                f" Your Login UserId is {student_instance.user_name} & "
-                                f"Your Login Password is {student_instance.first_name}",
-                        # f"Your One Time Login Password is {one_time_password()}",
-                        from_email=settings.DEFAULT_FROM_EMAIL,
-                        recipient_list=[student_instance.email],
-                        fail_silently=False,
-                    )
+                    try:
+                        if student_instance.email:  # Only send if email exists
+                            send_mail(
+                                subject="Welcome to Acadix!",
+                                message=f"Hello {student_instance.first_name}, your registration was successful!"
+                                        f" Your Login UserId is {student_instance.user_name} & "
+                                        f"Your Login Password is {student_instance.first_name}",
+                                # f"Your One Time Login Password is {one_time_password()}",
+                                from_email=settings.DEFAULT_FROM_EMAIL,
+                                recipient_list=[student_instance.email],
+                                fail_silently=False,
+                            )
+                    except Exception as e:
+                        # Log the email error but don't crash the request
+                        print(f"⚠️ Email sending failed: {str(e)}")
+                        # Optionally log to your ExceptionTrack table
+                        # ExceptionTrack.objects.create(
+                        #     process_name='StudentRegistrationWelcomeEmail',
+                        #     message=f'Failed to send welcome email: {str(e)}'
+                        # )
 
                 transaction.on_commit(send_welcome_email)
             return Response({"message": "Student Registered Successfully.", "data": response_data},

@@ -1396,7 +1396,7 @@ const AdmAttendanceEntry = ({
                           Array.isArray(languages)
                             ? languages.map((lang) => ({
                               value: lang.id, // send ID to backend
-                              label: lang.language_desc, // show user-friendly name
+                              label: lang.mother_tongue_name, // ✅ Correct field name from API
                             }))
                             : []
                         }
@@ -1407,7 +1407,7 @@ const AdmAttendanceEntry = ({
                               label:
                                 languages.find(
                                   (l) => l.id === formData.language
-                                )?.language_desc || "Select Language",
+                                )?.mother_tongue_name || "Select Language", // ✅ Correct field name
                             }
                             : null
                         }
